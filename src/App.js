@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/home/Home';
+import NotFound from './pages/not-found/NotFound';
+import Navbar from './components/navbar/Navbar';
+import SignUp from './pages/sign-up/SignUp';
+import SignIn from './pages/sign-in/SignIn';
+import ForgotPassword from './pages/forgot-password/ForgotPassword';
+import AuthContextProvider from './contexts/AuthContext'
+import AuthRoute from './components/AuthRoute';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<AuthContextProvider>
+			<Navbar />
+
+			<div className="container">
+				<Routes>
+					<AuthRoute path='/'>
+						<Home />
+					</AuthRoute>
+
+					<Route path='/signup'>
+						<SignUp />
+					</Route>
+
+					<Route path='/signin'>
+						<SignIn />
+					</Route>
+
+					<Route path='/forgot-password'>
+						<ForgotPassword />
+					</Route>
+
+					<Route path="*" element={ <NotFound /> } />
+				</Routes>
+			</div>
+		</AuthContextProvider>
+	);
 }
 
 export default App;

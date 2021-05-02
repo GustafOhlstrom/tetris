@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto&display=swap');
+@import './Variables.scss';
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Roboto', 'Montserrat', sans-serif;
+	background-color: var(--background-1);
+	color: var(--color-1);
+	letter-spacing: 0.05rem;
+}
+
+.container {
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+	min-height: calc(100vh);
+	max-width: 600px;
+	margin: auto;
+	padding: 16px;
+}
+
+button {
+	padding: 1rem 2rem;
+	
+	color: #EDEDED;
+	background: var(--button-background-1);
+	
+	font-family: 'Roboto', 'Montserrat', sans-serif;
+	font-size: 1.25rem;
+	font-weight: 600;
+	line-height: 1.5rem;
+
+	border: none;
+	border-radius: var(--border-radius-1);
+	outline: none;
+
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+
+	&:hover {
+		color: #FFF;
+		background: var(--button-background-2);
+	}
+
+	&:disabled {
+		opacity: 0.5;
+
+		&:hover {
+			color: var(--button-color-1);
+			background: var(--button-background-1);
+		}
+	}
+}
+
+input {
+	display: block;
+	width: 100%;
+	margin-bottom: 1rem;
+	padding: 0.75rem;
+
+	font-family: 'Roboto', 'Montserrat', sans-serif;
+	font-size: 1rem;
+	line-height: 1rem;
+
+	color: #FFF;
+	background: var(--background-2);
+	border: none;
+	border: 1px solid var(--background-2);
+	border-radius: 6px;
+	outline: none;
+	caret-color: #FFF;
+
+	&:focus,
+	&:active {
+		border: 1px solid var(--color-theme-1);
+	}
+
+	&:-webkit-autofill,
+	&:-webkit-autofill:hover, 
+	&:-webkit-autofill:focus, 
+	&:-webkit-autofill:active {
+		-webkit-text-fill-color: #FFF;
+		-webkit-box-shadow: 0 0 0px 1000px var(--background-2) inset;
+		transition: background-color 5000s ease-in-out 0s;
+	}
+}
+
+a {
+	color: var(--color-theme-1);
+	text-decoration: none;
+	-webkit-tap-highlight-color: transparent;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+svg {
+	height: 24px;
+	width: auto;
+	color: var(--color-1);
+}
+
+.success {
+	margin-bottom: 1rem;
+	color: var(--color-good);
+	text-align: center;
+}
+
+.error {
+	margin-bottom: 1rem;
+	color: var(--color-bad);
+	text-align: center;
+}
+
+.warning {
+	margin-bottom: 1rem;
+	color: var(--color-warning);
+	text-align: center;
+}
