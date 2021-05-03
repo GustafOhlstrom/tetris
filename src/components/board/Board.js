@@ -1,76 +1,84 @@
 import './Board.scss'
-import React, { useState } from 'react'
-import { tetrominos } from './tetrominos'
-import Cell from '../cell/Cell';
+import React, { useEffect, useState } from 'react'
+import Cell from '../cell/Cell'
+import useTetromino from '../../hooks/useTetromino'
 
-const cellSize = 48;
-const boardWidth = 10;
-const boardHeight = 20;
+const cellSize = 48
+const boardWidth = 10
+const boardHeight = 20
 
 const Board = () => {
-	const board = Array.from(Array(boardHeight), () => Array(boardWidth).fill(0));
-	
-	const [tetromino, setTetromino] = useState({
-		shape: Object.values(tetrominos)[0],
-		pos: {
-			x: 0, 
-			y: 0 
-		},
-	});
+	const [board, setBoard] = useState(Array.from(Array(boardHeight), () => Array(boardWidth).fill([0, 0])))
+	const { tetromino, moveTetromino, dropTetromino, rotateTetromino } = useTetromino()
 
-	// const allTetrominos = 'IJLOSTZ';
-	// const tetromino = allTetrominos[Math.floor(Math.random() * allTetrominos.length)];
-	// tetrominos[tetromino].forEach((row, i) => {
-	// 	row.forEach((cell, j) => {
-	// 		board[i][j] = cell;
-	// 	})
-	// });
-
-	const placeTetromino = () => {
-		console.log("tetromino", tetromino)
-		tetromino.shape.forEach((row, i) => {
-			row.forEach((cell, j) => {
-				board[tetromino.pos.y + i][tetromino.pos.x + j] = cell;
+	useEffect(() => {
+		setBoard(prev => {
+			// Clear old tetromino/cells
+			const newBoard = prev.map(row => 
+				row.map(cell => {
+					if(cell[0] && !cell[1]) {
+						return [0, 0]
+					}
+					return cell
+				})
+			)
+			
+			// Add new tetromino position
+			tetromino.shape.forEach((row, y) => {
+				row.forEach((cell, x) => {
+					if(cell) {
+						newBoard[tetromino.pos.y + y][tetromino.pos.x + x] = [cell, 0]
+					}
+				})
 			})
-		});
-	}
-	placeTetromino();
-	console.log("board", board);
 
-	const onMoveDown = () => {
-		setTetromino(prev => ({
-			...prev,
-			pos: {
-				x: prev.pos.x,
-				y: prev.pos.y++ 
-			}
-		}));
+			console.log("tetromino", tetromino)
+			console.log("new board", newBoard)
+			return newBoard
+		})
+	}, [tetromino]);
 
-		console.log("tetromino", tetromino)
-		placeTetromino();
-	}
+	const onMove = ({ key }) => {
+		console.log("onMove", key)
+		switch(key) {
+			case 'ArrowUp':
+				rotateTetromino()
+				break
+			case 'ArrowRight':
+				moveTetromino(1, 0)
+				break
+			case 'ArrowDown':
+				moveTetromino(0, 1)
+				break
+			case 'ArrowLeft':
+				moveTetromino(-1, 0)
+				break
+			case ' ':
+				dropTetromino()
+				break
+			default:
+				break
+		}
+	};
 	
 	return (
-		<>
-			<button onClick={onMoveDown}>Move down</button>
-
-			<div 
-				className="board" 
-				style={{
-					width: cellSize * boardWidth,
-					height: cellSize * boardHeight
-				}}
-			>
-				{
-					board.map((row, i) => (
-						row.map((cell, j) => (
-							<Cell key={i + '-' + j} size={cellSize} tetromino={cell} />
-						))
+		<div 
+			className="board" 
+			style={{
+				width: cellSize * boardWidth,
+				height: cellSize * boardHeight
+			}}
+			onKeyDown={event => onMove(event)}
+			tabIndex="0"
+		>
+			{
+				board.map((row, i) => (
+					row.map((cell, j) => (
+						<Cell key={i + '-' + j} size={cellSize} tetromino={cell[0]} />
 					))
-				}
-			</div>
-		</>
-		
+				))
+			}
+		</div>
 	)
 }
 
