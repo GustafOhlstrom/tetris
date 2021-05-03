@@ -1,6 +1,6 @@
 import './SignUp.scss'
 import React, { useContext, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../contexts/AuthContext'
 import Loader from '../../components/loader/Loader'
 
@@ -46,6 +46,10 @@ const SignUp = () => {
 							
 							<button>Sign up</button>
 						</form>
+
+						<p>
+							Already a member? <Link to="/signin">Sign in now</Link>
+						</p>
 					</>
 			}
 		</div>
