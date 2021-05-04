@@ -13,6 +13,8 @@ const Board = () => {
 
 	useEffect(() => {
 		setBoard(prev => {
+			let collision = false;
+
 			// Clear old tetromino/cells
 			const newBoard = prev.map(row => 
 				row.map(cell => {
@@ -27,12 +29,21 @@ const Board = () => {
 			tetromino.shape.forEach((row, y) => {
 				row.forEach((cell, x) => {
 					if(cell) {
-						newBoard[tetromino.pos.y + y][tetromino.pos.x + x] = [cell, 0]
+						const newY = tetromino.pos.y + y
+						const newX = tetromino.pos.x + x
+
+						newBoard[newY][newX] = [cell, 0]
 					}
 				})
 			})
 
 			console.log("tetromino", tetromino)
+			
+			if(collision) {
+				console.log("new board", prev)
+				return prev
+			}
+
 			console.log("new board", newBoard)
 			return newBoard
 		})
@@ -42,16 +53,16 @@ const Board = () => {
 		console.log("onMove", key)
 		switch(key) {
 			case 'ArrowUp':
-				rotateTetromino()
+				rotateTetromino(board)
 				break
 			case 'ArrowRight':
-				moveTetromino(1, 0)
+				moveTetromino(board, 1, 0)
 				break
 			case 'ArrowDown':
-				moveTetromino(0, 1)
+				moveTetromino(board, 0, 1)
 				break
 			case 'ArrowLeft':
-				moveTetromino(-1, 0)
+				moveTetromino(board, -1, 0)
 				break
 			case ' ':
 				dropTetromino()
@@ -60,7 +71,7 @@ const Board = () => {
 				break
 		}
 	};
-	
+
 	return (
 		<div 
 			className="board" 
