@@ -180,8 +180,22 @@ const useTetromino = board => {
 
 		return false
 	}
+
+	const resetTetromino = () => {
+		const type = Object.keys(tetrominos)[Math.floor(Math.random() * 6)]
+		setTetromino({
+			type: type,
+			shape: tetrominos[type],
+			pos: {
+				x: type === 'O' ? 4 : 3, 
+				y: 0 
+			},
+			state: 0,
+			locked: false,
+		})
+	}
 	
-	return { tetromino, moveTetromino, dropTetromino, rotateTetromino }
+	return { tetromino, moveTetromino, dropTetromino, rotateTetromino, resetTetromino }
 }
 
 export default useTetromino

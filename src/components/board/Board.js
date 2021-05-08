@@ -2,19 +2,31 @@ import './Board.scss'
 import React, { useEffect, useState } from 'react'
 import Cell from '../cell/Cell'
 import useTetromino from '../../hooks/useTetromino'
+import useInterval from '../../hooks/useInterval'
 
 const cellSize = 32
 const boardWidth = 10
 const boardHeight = 20
 
 const Board = () => {
-	const [tickId, setTickId] = useState(null)
+	const [status, setStatus] = useState(true)
+	
 	const [tick, setTick] = useState(0)
+	const [delay, setDelay] = useState(null);
 
 	const [board, setBoard] = useState(Array.from(Array(boardHeight), () => Array(boardWidth).fill([0, 0])))
-	const { tetromino, moveTetromino, dropTetromino, rotateTetromino } = useTetromino()
+	const { tetromino, moveTetromino, dropTetromino, rotateTetromino, resetTetromino } = useTetromino()
+
+	useInterval(() => {
+		if(status) {
+			setTick(prev => prev + 1)
+			moveTetromino(board, 0, 1)
+		}
+	}, delay);
 
 	useEffect(() => {
+		let gameOver = false
+
 		setBoard(prev => {
 			// Clear old tetromino/cells
 			const newBoard = prev.map(row => 
@@ -33,7 +45,11 @@ const Board = () => {
 						const newY = tetromino.pos.y + y
 						const newX = tetromino.pos.x + x
 
-						newBoard[newY][newX] = [cell, tetromino.locked]
+						if(newBoard[newY][newX][1]) {
+							gameOver = true
+						} else {
+							newBoard[newY][newX] = [cell, tetromino.locked]
+						}
 					}
 				})
 			})
@@ -59,11 +75,27 @@ const Board = () => {
 
 			// console.log("tetromino", tetromino)
 			// console.log("new board", newBoard)
+
+			if(gameOver) {
+				setStatus(false)
+				return prev
+			}
+
 			return newBoard
 		})
 	}, [tetromino])
 
+	useEffect(() => {
+		if(!status) {
+			alert("game over")
+		}
+	}, [status])
+
 	const onMove = ({ key }) => {
+		if(!status) {
+			return
+		}
+
 		// console.log("onMove", key)
 		switch(key) {
 			case 'ArrowUp':
@@ -86,39 +118,26 @@ const Board = () => {
 		}
 	}
 
-	useEffect(() => {
-		if(!tick) {
-			return
-		}
-		
-		moveTetromino(board, 0, 1)
-	}, [tick])
-
 	const onStartGame = () => {
-		if(tickId) {
-			return
+		if(!status) {
+			const newBoard = Array.from(Array(boardHeight), () => Array(boardWidth).fill([0, 0]))
+			setBoard(newBoard)
+			resetTetromino()
+			setStatus(true)
+			console.log("test", status)
 		}
 
-		const id = setInterval(() => {
-			setTick(prev => prev + 1)
-		}, 500)
-
-		setTickId(id)
+		setDelay(100)
 	}
 
 	const onPauseGame = () => {
-		if(!tickId) {
-			return
-		}
-
-		clearInterval(tickId)
-		setTickId(null)
+		setDelay(null)
 	}
 
 	return (
 		<>
 			{
-				tickId
+				status && tick
 					? <button onClick={onPauseGame}>Pause Game</button>
 					: <button onClick={onStartGame}>Start Game</button>
 			}
