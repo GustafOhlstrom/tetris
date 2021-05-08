@@ -158,7 +158,7 @@ const useTetromino = board => {
 			result.newBlocK = true;
 		}
 
-		console.log("test", shape, result, moveDown)
+		// console.log("test", shape, result, moveDown)
 		return result
 	}
 

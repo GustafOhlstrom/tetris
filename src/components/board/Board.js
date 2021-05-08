@@ -37,15 +37,34 @@ const Board = () => {
 					}
 				})
 			})
+			
+			// Detect row completion
+			const reversedBord = [...newBoard].reverse()
+			const length = newBoard.length - 1
+			let rows = 0
+			reversedBord.forEach((row, i) => {
+				if(row.some(cell => !cell[1])) {
+					return
+				}
+				
+				rows++
+				newBoard.splice(length - i, 1)
+			})
 
-			console.log("tetromino", tetromino)
-			console.log("new board", newBoard)
+			// Remove completed rows
+			if(rows) {
+				newBoard.unshift(...Array.from(Array(rows), () => Array(boardWidth).fill([0, 0])))
+				console.log("Row completion")
+			}
+
+			// console.log("tetromino", tetromino)
+			// console.log("new board", newBoard)
 			return newBoard
 		})
 	}, [tetromino])
 
 	const onMove = ({ key }) => {
-		console.log("onMove", key)
+		// console.log("onMove", key)
 		switch(key) {
 			case 'ArrowUp':
 				rotateTetromino(board)
