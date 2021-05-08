@@ -1,7 +1,6 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { tetrominos } from '../constants/tetrominos'
 
-const cellSize = 48
 const boardWidth = 10
 const boardHeight = 20
 
@@ -21,24 +20,50 @@ const wallKicksTestsI = [
 	[[0, 0], [1, 0], [-2, 0], [1, -2], [-2, 1]]
 ]
 
-const useTetromino = (board) => {
+const useTetromino = board => {
 	const [tetromino, setTetromino] = useState({
 		type: type,
 		shape: tetrominos[type],
 		pos: {
-			x: 0, 
+			x: type === 'O' ? 4 : 3, 
 			y: 0 
 		},
-		state: 0
+		state: 0,
+		locked: false,
 	})
+
+	useEffect(() => {
+		if(tetromino.locked) {
+			const type = Object.keys(tetrominos)[Math.floor(Math.random() * 6)]
+			setTetromino({
+				type: type,
+				shape: tetrominos[type],
+				pos: {
+					x: type === 'O' ? 4 : 3, 
+					y: 0 
+				},
+				state: 0,
+				locked: false,
+			})
+		}
+	}, [tetromino]);
 
 	const moveTetromino = (board, x, y) => {
 		setTetromino(prev => {
 			const newX = prev.pos.x + x
 			const newY = prev.pos.y + y
 
+			// Detect collision
+			const collision = detectCollision(board, prev.shape, newX, newY, y)
+
 			// Return prev if collision occurred
-			if(detectCollision(board, prev.shape, newX, newY)) {
+			if(collision.collision) {
+				if(collision.newBlocK) {
+					return {
+						...prev,
+						locked: true
+					}
+				}
 				return prev
 			}
 			
@@ -58,7 +83,7 @@ const useTetromino = (board) => {
 		// Need collision to implement
 	}
 
-	const rotateTetromino = (board) => {
+	const rotateTetromino = board => {
 		setTetromino(prev => {
 			if(prev.type === "O") {
 				return prev
@@ -80,7 +105,7 @@ const useTetromino = (board) => {
 				let newX = prev.pos.x + wallKicks[state][i][0]
 				let newY = prev.pos.y - wallKicks[state][i][1]
 				
-				if(!detectCollision(board, shape, newX, newY)) {
+				if(!detectCollision(board, shape, newX, newY, 0).collision) {
 					// Return new rotated tetromino
 					return {
 						shape,
@@ -97,19 +122,28 @@ const useTetromino = (board) => {
 		})
 	}
 
-	const detectCollision = (board, shape, newX, newY) => {
-		let collision = false
+	const detectCollision = (board, shape, newX, newY, moveDown) => {
+		let result = {
+			collision: false,
+			newBlocK: false
+		}
 
 		// Check collision for all cells in tetromino
 		shape.forEach((row, y) => {
 			row.forEach((cell, x) => {
-				if(cell && !collision) {
-					collision = isCollision(board, newX + x, newY + y)
+				if(cell && !result.collision) {
+					result.collision = isCollision(board, newX + x, newY + y)
 				}
 			})
 		})
 
-		return collision
+		// If moving down check if collision occured on last row with a cell
+		if(moveDown) {
+			result.newBlocK = true;
+		}
+
+		console.log("test", shape, result, moveDown)
+		return result
 	}
 
 	const isCollision = (board, x, y) => {

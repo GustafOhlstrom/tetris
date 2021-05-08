@@ -3,22 +3,23 @@ import React, { useEffect, useState } from 'react'
 import Cell from '../cell/Cell'
 import useTetromino from '../../hooks/useTetromino'
 
-const cellSize = 48
+const cellSize = 32
 const boardWidth = 10
 const boardHeight = 20
 
 const Board = () => {
+	const [tickId, setTickId] = useState(null)
+	const [tick, setTick] = useState(0)
+
 	const [board, setBoard] = useState(Array.from(Array(boardHeight), () => Array(boardWidth).fill([0, 0])))
 	const { tetromino, moveTetromino, dropTetromino, rotateTetromino } = useTetromino()
 
 	useEffect(() => {
 		setBoard(prev => {
-			let collision = false;
-
 			// Clear old tetromino/cells
 			const newBoard = prev.map(row => 
 				row.map(cell => {
-					if(cell[0] && !cell[1]) {
+					if(cell[0] &&! cell[1]) {
 						return [0, 0]
 					}
 					return cell
@@ -32,22 +33,16 @@ const Board = () => {
 						const newY = tetromino.pos.y + y
 						const newX = tetromino.pos.x + x
 
-						newBoard[newY][newX] = [cell, 0]
+						newBoard[newY][newX] = [cell, tetromino.locked]
 					}
 				})
 			})
 
 			console.log("tetromino", tetromino)
-			
-			if(collision) {
-				console.log("new board", prev)
-				return prev
-			}
-
 			console.log("new board", newBoard)
 			return newBoard
 		})
-	}, [tetromino]);
+	}, [tetromino])
 
 	const onMove = ({ key }) => {
 		console.log("onMove", key)
@@ -70,26 +65,63 @@ const Board = () => {
 			default:
 				break
 		}
-	};
+	}
+
+	useEffect(() => {
+		if(!tick) {
+			return
+		}
+		
+		moveTetromino(board, 0, 1)
+	}, [tick])
+
+	const onStartGame = () => {
+		if(tickId) {
+			return
+		}
+
+		const id = setInterval(() => {
+			setTick(prev => prev + 1)
+		}, 500)
+
+		setTickId(id)
+	}
+
+	const onPauseGame = () => {
+		if(!tickId) {
+			return
+		}
+
+		clearInterval(tickId)
+		setTickId(null)
+	}
 
 	return (
-		<div 
-			className="board" 
-			style={{
-				width: cellSize * boardWidth,
-				height: cellSize * boardHeight
-			}}
-			onKeyDown={event => onMove(event)}
-			tabIndex="0"
-		>
+		<>
 			{
-				board.map((row, i) => (
-					row.map((cell, j) => (
-						<Cell key={i + '-' + j} size={cellSize} tetromino={cell[0]} />
-					))
-				))
+				tickId
+					? <button onClick={onPauseGame}>Pause Game</button>
+					: <button onClick={onStartGame}>Start Game</button>
 			}
-		</div>
+
+			<div 
+				className="board" 
+				style={{
+					width: cellSize * boardWidth,
+					height: cellSize * boardHeight
+				}}
+				onKeyDown={event => onMove(event)}
+				tabIndex="0"
+			>
+				{
+					board.map((row, i) => (
+						row.map((cell, j) => (
+							<Cell key={i + '-' + j} size={cellSize} tetromino={cell[0]} />
+						))
+					))
+				}
+			</div>
+		</>
 	)
 }
 
