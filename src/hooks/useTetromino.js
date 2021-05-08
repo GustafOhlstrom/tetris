@@ -78,9 +78,25 @@ const useTetromino = board => {
 		})
 	}
 
-	const dropTetromino = () => {
-		console.log("drop")
-		// Need collision to implement
+	const dropTetromino = board => {
+		setTetromino(prev => {
+			let newX = prev.pos.x
+			let newY = prev.pos.y + 1
+
+			// Detect collision
+			while(!detectCollision(board, prev.shape, newX, newY, 1).collision) {
+				newY++
+			}
+			
+			return {
+				...prev,
+				pos: {
+					x: newX,
+					y: newY - 1 
+				},
+				locked: true
+			}
+		})
 	}
 
 	const rotateTetromino = board => {

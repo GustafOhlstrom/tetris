@@ -60,7 +60,7 @@ const Board = () => {
 				moveTetromino(board, -1, 0)
 				break
 			case ' ':
-				dropTetromino()
+				dropTetromino(board)
 				break
 			default:
 				break
