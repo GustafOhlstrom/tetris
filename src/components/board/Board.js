@@ -9,13 +9,14 @@ const boardWidth = 10
 const boardHeight = 20
 
 const Board = () => {
-	const [status, setStatus] = useState(true)
+	const [status, setStatus] = useState(false)
+	const [gameOver, setGameOver] = useState(false)
 	
 	const [tick, setTick] = useState(0)
 	const [delay, setDelay] = useState(null);
 
-	const [board, setBoard] = useState(Array.from(Array(boardHeight), () => Array(boardWidth).fill([0, 0])))
-	const { tetromino, moveTetromino, dropTetromino, rotateTetromino, resetTetromino } = useTetromino()
+	const [board, setBoard] = useState(Array.from(Array(boardHeight), () => Array.from(Array(boardWidth), () => [0, 0, 0])))		// [occupied, locked, preview]
+	const { tetromino, moveTetromino, dropTetromino, rotateTetromino, resetTetromino } = useTetromino(board)
 
 	useInterval(() => {
 		if(status) {
@@ -26,14 +27,21 @@ const Board = () => {
 
 	useEffect(() => {
 		let gameOver = false
+		setDelay(null)
 
 		setBoard(prev => {
+			if(tetromino.new) {
+				moveTetromino(prev, 0, 0)
+				return prev
+			}
+
 			// Clear old tetromino/cells
 			const newBoard = prev.map(row => 
 				row.map(cell => {
 					if(cell[0] &&! cell[1]) {
-						return [0, 0]
+						return [0, 0, 0]
 					}
+					cell[2] = 0
 					return cell
 				})
 			)
@@ -46,9 +54,11 @@ const Board = () => {
 						const newX = tetromino.pos.x + x
 
 						if(newBoard[newY][newX][1]) {
+							console.log("game over")
 							gameOver = true
 						} else {
-							newBoard[newY][newX] = [cell, tetromino.locked]
+							newBoard[newY][newX] = [cell, tetromino.locked, 0]
+							newBoard[tetromino.preview.y + y][tetromino.preview.x + x][2] = cell
 						}
 					}
 				})
@@ -69,33 +79,31 @@ const Board = () => {
 
 			// Remove completed rows
 			if(rows) {
-				newBoard.unshift(...Array.from(Array(rows), () => Array(boardWidth).fill([0, 0])))
-				console.log("Row completion")
+				newBoard.unshift(...Array.from(Array(rows), () => Array.from(Array(boardWidth), () => [0, 0, 0])))
 			}
 
 			// console.log("tetromino", tetromino)
 			// console.log("new board", newBoard)
 
 			if(gameOver) {
-				setStatus(false)
+				setGameOver(true)
 				return prev
 			}
 
 			return newBoard
 		})
-	}, [tetromino])
+
+		setDelay(500)
+	}, [tetromino, moveTetromino])
 
 	useEffect(() => {
-		if(!status) {
+		if(gameOver) {
+			setStatus(false)
 			alert("game over")
 		}
-	}, [status])
+	}, [gameOver])
 
 	const onMove = ({ key }) => {
-		if(!status) {
-			return
-		}
-
 		// console.log("onMove", key)
 		switch(key) {
 			case 'ArrowUp':
@@ -120,25 +128,28 @@ const Board = () => {
 
 	const onStartGame = () => {
 		if(!status) {
-			const newBoard = Array.from(Array(boardHeight), () => Array(boardWidth).fill([0, 0]))
-			setBoard(newBoard)
-			resetTetromino()
+			if(gameOver) {
+				const newBoard = Array.from(Array(boardHeight), () => Array.from(Array(boardWidth), () => [0, 0, 0]))
+				setBoard(newBoard)
+				resetTetromino()
+				setGameOver(false)
+			}
+			
 			setStatus(true)
-			console.log("test", status)
 		}
 
-		setDelay(100)
+		setDelay(500)
 	}
 
 	const onPauseGame = () => {
-		setDelay(null)
+		setDelay(prev => prev ? null : 500)
 	}
 
 	return (
 		<>
 			{
 				status && tick
-					? <button onClick={onPauseGame}>Pause Game</button>
+					? <button onClick={onPauseGame}>{delay ? 'Pause Game' : 'Resume'}</button>
 					: <button onClick={onStartGame}>Start Game</button>
 			}
 
@@ -154,7 +165,7 @@ const Board = () => {
 				{
 					board.map((row, i) => (
 						row.map((cell, j) => (
-							<Cell key={i + '-' + j} size={cellSize} tetromino={cell[0]} />
+							<Cell key={i + '-' + j} size={cellSize} tetromino={cell[0]} preview={cell[2]} />
 						))
 					))
 				}

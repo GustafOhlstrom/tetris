@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { tetrominos } from '../constants/tetrominos'
 
 const boardWidth = 10
@@ -26,10 +26,15 @@ const useTetromino = board => {
 		shape: tetrominos[type],
 		pos: {
 			x: type === 'O' ? 4 : 3, 
-			y: 0 
+			y: type === 'I' ? -1 : 0
+		},
+		preview: {
+			x: type === 'O' ? 4 : 3, 
+			y: 18
 		},
 		state: 0,
 		locked: false,
+		new: true
 	})
 
 	useEffect(() => {
@@ -40,43 +45,18 @@ const useTetromino = board => {
 				shape: tetrominos[type],
 				pos: {
 					x: type === 'O' ? 4 : 3, 
-					y: 0 
+					y: type === 'I' ? -1 : 0  
+				},
+				preview: {
+					x: type === 'O' ? 4 : 3, 
+					y: 18
 				},
 				state: 0,
 				locked: false,
+				new: true
 			})
 		}
 	}, [tetromino]);
-
-	const moveTetromino = (board, x, y) => {
-		setTetromino(prev => {
-			const newX = prev.pos.x + x
-			const newY = prev.pos.y + y
-
-			// Detect collision
-			const collision = detectCollision(board, prev.shape, newX, newY, y)
-
-			// Return prev if collision occurred
-			if(collision.collision) {
-				if(collision.newBlocK) {
-					return {
-						...prev,
-						locked: true
-					}
-				}
-				return prev
-			}
-			
-			// Return new tetromino
-			return {
-				...prev,
-				pos: {
-					x: newX,
-					y: newY 
-				}
-			}
-		})
-	}
 
 	const dropTetromino = board => {
 		setTetromino(prev => {
@@ -94,7 +74,8 @@ const useTetromino = board => {
 					x: newX,
 					y: newY - 1 
 				},
-				locked: true
+				locked: true,
+				new: false
 			}
 		})
 	}
@@ -122,6 +103,13 @@ const useTetromino = board => {
 				let newY = prev.pos.y - wallKicks[state][i][1]
 				
 				if(!detectCollision(board, shape, newX, newY, 0).collision) {
+					// Detect preview collision
+					let previewX = newX
+					let previewY = newY
+					while(!detectCollision(board, shape, previewX, previewY, 0).collision) {
+						previewY++
+					}
+
 					// Return new rotated tetromino
 					return {
 						shape,
@@ -129,16 +117,43 @@ const useTetromino = board => {
 							x: newX,
 							y: newY
 						},
-						state: state === 3 ? 0 : prev.state + 1
+						preview: {
+							x: previewX,
+							y: previewY - 1
+						},
+						state: state === 3 ? 0 : prev.state + 1,
+						new: false
 					}
 				}
 			}
 			// Return prev if collision occurred and no walk kick was possible
-			return prev
+			return { 
+				...prev,
+				new: false
+			}
 		})
 	}
+	
+	const isCollision = useCallback((board, x, y) => {
+		// Check board width
+		if(x > boardWidth - 1 || x < 0) {
+			return true
+		}
 
-	const detectCollision = (board, shape, newX, newY, moveDown) => {
+		// Check board height
+		if(y > boardHeight - 1 || y < 0) {
+			return true
+		}
+
+		// Check cell
+		if(board[y][x][0] && board[y][x][1]) {
+			return true
+		}
+
+		return false
+	}, [])
+
+	const detectCollision =  useCallback((board, shape, newX, newY, moveDown) => {
 		let result = {
 			collision: false,
 			newBlocK: false
@@ -160,26 +175,53 @@ const useTetromino = board => {
 
 		// console.log("test", shape, result, moveDown)
 		return result
-	}
+	}, [isCollision])
 
-	const isCollision = (board, x, y) => {
-		// Check board width
-		if(x > boardWidth - 1 || x < 0) {
-			return true
-		}
+	const moveTetromino = useCallback((board, x, y) => {
+		setTetromino(prev => {
+			const newX = prev.pos.x + x
+			const newY = prev.pos.y + y
 
-		// Check board height
-		if(y > boardHeight - 1 || y < 0) {
-			return true
-		}
+			// Detect collision
+			const collision = detectCollision(board, prev.shape, newX, newY, y)
 
-		// Check cell
-		if(board[y][x][0] && board[y][x][1]) {
-			return true
-		}
+			// Return prev if collision occurred
+			if(collision.collision) {
+				if(collision.newBlocK) {
+					return {
+						...prev,
+						locked: true,
+						new: false
+					}
+				}
+				return {
+					...prev,
+					new: false
+				}
+			}
 
-		return false
-	}
+			// Detect previwe collision
+			let previewX = newX
+			let previewY = newY
+			while(!detectCollision(board, prev.shape, previewX, previewY, 1).collision) {
+				previewY++
+			}
+			
+			// Return new tetromino
+			return {
+				...prev,
+				pos: {
+					x: newX,
+					y: newY 
+				},
+				preview: {
+					x: previewX,
+					y: previewY - 1
+				},
+				new: false
+			}
+		})
+	}, [detectCollision])
 
 	const resetTetromino = () => {
 		const type = Object.keys(tetrominos)[Math.floor(Math.random() * 6)]
@@ -192,6 +234,7 @@ const useTetromino = board => {
 			},
 			state: 0,
 			locked: false,
+			new: true
 		})
 	}
 	
