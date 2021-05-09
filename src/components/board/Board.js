@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Cell from '../cell/Cell'
 import useTetromino from '../../hooks/useTetromino'
 import useInterval from '../../hooks/useInterval'
+import NextUp from '../nextUp/NextUp'
 
 const cellSize = 32
 const boardWidth = 10
@@ -13,17 +14,17 @@ const Board = () => {
 	const [gameOver, setGameOver] = useState(false)
 	
 	const [tick, setTick] = useState(0)
-	const [delay, setDelay] = useState(null);
+	const [delay, setDelay] = useState(null)
 
 	const [board, setBoard] = useState(Array.from(Array(boardHeight), () => Array.from(Array(boardWidth), () => [0, 0, 0])))		// [occupied, locked, preview]
-	const { tetromino, moveTetromino, dropTetromino, rotateTetromino, resetTetromino } = useTetromino(board)
+	const { tetromino, nextUp, moveTetromino, dropTetromino, rotateTetromino, resetTetromino } = useTetromino(board)
 
 	useInterval(() => {
 		if(status) {
 			setTick(prev => prev + 1)
 			moveTetromino(board, 0, 1)
 		}
-	}, delay);
+	}, delay)
 
 	useEffect(() => {
 		let gameOver = false
@@ -153,22 +154,27 @@ const Board = () => {
 					: <button onClick={onStartGame}>Start Game</button>
 			}
 
-			<div 
-				className="board" 
-				style={{
-					width: cellSize * boardWidth,
-					height: cellSize * boardHeight
-				}}
-				onKeyDown={event => onMove(event)}
-				tabIndex="0"
-			>
-				{
-					board.map((row, i) => (
-						row.map((cell, j) => (
-							<Cell key={i + '-' + j} size={cellSize} tetromino={cell[0]} preview={cell[2]} />
+			<div className="flex">
+				<div 
+					className="board" 
+					style={{
+						width: cellSize * boardWidth,
+						height: cellSize * boardHeight,
+						marginLeft: cellSize * 4
+					}}
+					onKeyDown={event => onMove(event)}
+					tabIndex="0"
+				>
+					{
+						board.map((row, i) => (
+							row.map((cell, j) => (
+								<Cell key={i + '-' + j} size={cellSize} tetromino={cell[0]} preview={cell[2]} />
+							))
 						))
-					))
-				}
+					}
+				</div>
+
+				<NextUp nextUp={nextUp} cellSize={cellSize} />
 			</div>
 		</>
 	)

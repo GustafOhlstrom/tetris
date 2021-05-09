@@ -1,0 +1,10 @@
+.next-up {  
+	.next-up-tetromino {
+		margin-bottom: 24px;
+
+		.next-up-row {
+			display: flex;
+			overflow: hidden;
+		}
+	}
+}

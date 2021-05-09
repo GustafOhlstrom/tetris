@@ -21,6 +21,7 @@ const wallKicksTestsI = [
 ]
 
 const useTetromino = board => {
+	const [nextUp, setNextUp] = useState([...Array(3)].map(() => Object.keys(tetrominos)[Math.floor(Math.random() * 6)]))
 	const [tetromino, setTetromino] = useState({
 		type: type,
 		shape: tetrominos[type],
@@ -36,24 +37,30 @@ const useTetromino = board => {
 		locked: false,
 		new: true
 	})
-
+	
 	useEffect(() => {
 		if(tetromino.locked) {
-			const type = Object.keys(tetrominos)[Math.floor(Math.random() * 6)]
-			setTetromino({
-				type: type,
-				shape: tetrominos[type],
-				pos: {
-					x: type === 'O' ? 4 : 3, 
-					y: type === 'I' ? -1 : 0  
-				},
-				preview: {
-					x: type === 'O' ? 4 : 3, 
-					y: 18
-				},
-				state: 0,
-				locked: false,
-				new: true
+			setNextUp(prev => {
+				setTetromino({
+					type: prev[0],
+					shape: tetrominos[prev[0]],
+					pos: {
+						x: prev[0] === 'O' ? 4 : 3, 
+						y: prev[0] === 'I' ? -1 : 0  
+					},
+					preview: {
+						x: prev[0] === 'O' ? 4 : 3, 
+						y: 18
+					},
+					state: 0,
+					locked: false,
+					new: true
+				})
+
+				const type = Object.keys(tetrominos)[Math.floor(Math.random() * 6)]
+				const newNextUp = [prev[1], prev[2], type]
+
+				return newNextUp
 			})
 		}
 	}, [tetromino]);
@@ -238,7 +245,7 @@ const useTetromino = board => {
 		})
 	}
 	
-	return { tetromino, moveTetromino, dropTetromino, rotateTetromino, resetTetromino }
+	return { tetromino, nextUp, moveTetromino, dropTetromino, rotateTetromino, resetTetromino }
 }
 
 export default useTetromino
