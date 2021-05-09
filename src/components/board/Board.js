@@ -4,6 +4,7 @@ import Cell from '../cell/Cell'
 import useTetromino from '../../hooks/useTetromino'
 import useInterval from '../../hooks/useInterval'
 import NextUp from '../nextUp/NextUp'
+import Hold from '../hold/Hold'
 
 const cellSize = 32
 const boardWidth = 10
@@ -17,7 +18,7 @@ const Board = () => {
 	const [delay, setDelay] = useState(null)
 
 	const [board, setBoard] = useState(Array.from(Array(boardHeight), () => Array.from(Array(boardWidth), () => [0, 0, 0])))		// [occupied, locked, preview]
-	const { tetromino, nextUp, moveTetromino, dropTetromino, rotateTetromino, resetTetromino } = useTetromino(board)
+	const { tetromino, nextUp, hold, moveTetromino, dropTetromino, rotateTetromino, resetTetromino, holdTetromino } = useTetromino(board)
 
 	useInterval(() => {
 		if(status) {
@@ -122,6 +123,11 @@ const Board = () => {
 			case ' ':
 				dropTetromino(board)
 				break
+			case 'c':
+			case 'C':
+			case 'Shift':
+				holdTetromino()
+				break
 			default:
 				break
 		}
@@ -154,13 +160,15 @@ const Board = () => {
 					: <button onClick={onStartGame}>Start Game</button>
 			}
 
+
 			<div className="flex">
+				<Hold hold={hold} cellSize={cellSize} />
+
 				<div 
 					className="board" 
 					style={{
 						width: cellSize * boardWidth,
-						height: cellSize * boardHeight,
-						marginLeft: cellSize * 4
+						height: cellSize * boardHeight
 					}}
 					onKeyDown={event => onMove(event)}
 					tabIndex="0"

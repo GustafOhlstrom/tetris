@@ -26,16 +26,15 @@ const NextUp = ({ nextUp, cellSize }) => (
 								{
 									row.map((cell, k) => (
 										<Cell 
-											key={'nu-c' +i + '-' + j + '-' + k} 
+											key={'nu-c' + i + '-' + j + '-' + k} 
 											size={cellSize} 
 											tetromino={cell[0]} 
 											preview={cell[2]} 
-											nextUp={true} 
+											noBorder={true} 
 										/>
 									))
 								}
 							</div>
-							
 						))
 					}
 				</div>

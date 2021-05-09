@@ -37,7 +37,8 @@ const useTetromino = board => {
 		locked: false,
 		new: true
 	})
-	
+	const [hold, setHold] = useState([null, true])
+
 	useEffect(() => {
 		if(tetromino.locked) {
 			setNextUp(prev => {
@@ -62,6 +63,8 @@ const useTetromino = board => {
 
 				return newNextUp
 			})
+
+			setHold(prevHold => [prevHold[0], true])
 		}
 	}, [tetromino]);
 
@@ -119,6 +122,7 @@ const useTetromino = board => {
 
 					// Return new rotated tetromino
 					return {
+						...prev,
 						shape,
 						pos: {
 							x: newX,
@@ -244,8 +248,46 @@ const useTetromino = board => {
 			new: true
 		})
 	}
+
+	const holdTetromino = () => {
+		if(!hold[1] || !tetromino?.type) {
+			return
+		}
+
+		const currentType = tetromino.type
+		setHold(prevHold => {
+			setNextUp(prevNextUp => {
+				let type = prevHold[0] ? prevHold[0] : prevNextUp[0]
+				setTetromino({
+					type: type,
+					shape: tetrominos[type],
+					pos: {
+						x: type === 'O' ? 4 : 3, 
+						y: type === 'I' ? -1 : 0  
+					},
+					preview: {
+						x: type === 'O' ? 4 : 3, 
+						y: 18
+					},
+					state: 0,
+					locked: false,
+					new: true
+				})
+
+				if(prevHold[0]) {
+					return prevNextUp
+				}
+
+				const newType = Object.keys(tetrominos)[Math.floor(Math.random() * 6)]
+				const newNextUp = [prevNextUp[1], prevNextUp[2], newType]
+				return newNextUp
+			})
+			
+			return [currentType, false]
+		})
+	}
 	
-	return { tetromino, nextUp, moveTetromino, dropTetromino, rotateTetromino, resetTetromino }
+	return { tetromino, nextUp, hold, moveTetromino, dropTetromino, rotateTetromino, resetTetromino, holdTetromino }
 }
 
 export default useTetromino

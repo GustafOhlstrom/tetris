@@ -1,0 +1,10 @@
+.hold { 
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+
+	.hold-row {
+		display: flex;
+		overflow: hidden;
+	}
+}
