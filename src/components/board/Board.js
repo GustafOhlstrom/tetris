@@ -116,8 +116,28 @@ const Board = () => {
 	}, [gameOver])
 
 	useEffect(() => {
-		// Calc lines and score
-		setScore(prev => prev + rows.value)
+		// Calc score
+		setLevel(prev => {
+			setScore(prevScore => {
+				console.log("test", rows, prev, prevScore)
+				switch(rows.value) {
+					case 1:
+						return prevScore + (100 * prev)
+					case 2:
+						return prevScore + (300 * prev)
+					case 3:
+						return prevScore + (500 * prev)
+					case 4:
+						return prevScore + (800 * prev)
+					default:
+						return prevScore
+				}
+			})
+
+			return prev
+		})
+
+		// Calc lines
 		setLines(prev => prev + rows.value)
 	}, [rows])
 
