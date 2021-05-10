@@ -1,14 +1,12 @@
 import './Home.scss'
 import React from 'react'
-import Board from '../../components/board/Board'
+import Game from '../../components/game/Game'
 
 const Home = () => {
 
 	return (
 		<main className="home">
-			{/* <button>PLAY NOW</button> */}
-
-			<Board />
+			<Game />
 		</main>
 	)
 }

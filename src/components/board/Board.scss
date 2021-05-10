@@ -1,17 +1,6 @@
-.flex {
+.board {
     display: flex;
-
-    .left {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-    
-    .board {
-        display: flex;
-        flex-wrap: wrap;
-        overflow: hidden;
-        margin: 0 24px;
-    }
+    flex-wrap: wrap;
+    overflow: hidden;
+    margin: 0 24px;
 }
-

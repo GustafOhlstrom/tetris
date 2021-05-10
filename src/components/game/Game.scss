@@ -1,0 +1,13 @@
+.game {
+	display: flex;
+
+	&:focus-visible {
+		outline: none;
+	}
+
+	.side-panel {
+		display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+	}
+}
