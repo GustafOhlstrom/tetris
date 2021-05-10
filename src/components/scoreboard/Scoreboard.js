@@ -1,11 +1,16 @@
 import './Scoreboard.scss'
 import React from 'react'
 
-const Scoreboard = ({ score, lines }) => (
+const Scoreboard = ({ score, level, lines }) => (
 	<div className="scoreboard">
 		<div className="scoreboard-item">
 			<div>Score</div>
 			<div>{score}</div>
+		</div>
+
+		<div className="scoreboard-item">
+			<div>Level</div>
+			<div>{level}</div>
 		</div>
 
 		<div className="scoreboard-item">

@@ -11,6 +11,8 @@ const cellSize = 32
 const boardWidth = 10
 const boardHeight = 20
 
+const levels = [0.01667, 0.021017, 0.026977, 0.035256, 0.04693, 0.06361, 0.0879, 0.1236, 0.1775, 0.2598, 0.388, 0.59, 0.92, 1.46, 2.36, 3.91, 6.61, 11.43, 20]
+
 const Board = () => {
 	const [status, setStatus] = useState(false)
 	const [gameOver, setGameOver] = useState(false)
@@ -24,9 +26,11 @@ const Board = () => {
 	const [rows, setRows] = useState({ value: 0 })
 	const [score, setScore] = useState(0)
 	const [lines, setLines] = useState(0)
+	const [level, setLevel] = useState(1)
 
 	useInterval(() => {
 		if(status) {
+			console.log(delay)
 			setTick(prev => prev + 1)
 			moveTetromino(board, 0, 1)
 		}
@@ -101,8 +105,8 @@ const Board = () => {
 			return newBoard
 		})
 
-		setDelay(500)
-	}, [tetromino, moveTetromino])
+		setDelay((1 / levels[level - 1]) / 60 * 1000)
+	}, [tetromino, moveTetromino, level])
 
 	useEffect(() => {
 		if(gameOver) {
@@ -116,6 +120,20 @@ const Board = () => {
 		setScore(prev => prev + rows.value)
 		setLines(prev => prev + rows.value)
 	}, [rows])
+
+	useEffect(() => {
+		setLevel(prev => {
+			if(prev * 10 <= lines) {
+				return Math.floor(lines / 10) + 1
+			} 
+
+			return prev
+		})
+	}, [lines])
+
+	useEffect(() => {
+		setDelay((1 / levels[level - 1]) / 60 * 1000)
+	}, [level])
 
 	const onMove = ({ key }) => {
 		// console.log("onMove", key)
@@ -157,11 +175,11 @@ const Board = () => {
 			setStatus(true)
 		}
 
-		setDelay(500)
+		setDelay((1 / levels[level - 1]) / 60 * 1000)
 	}
 
 	const onPauseGame = () => {
-		setDelay(prev => prev ? null : 500)
+		setDelay(prev => prev ? null : (1 / levels[level - 1]) / 60 * 1000)
 	}
 
 	return (
@@ -176,7 +194,7 @@ const Board = () => {
 			<div className="flex">
 				<div className="left">
 					<Hold hold={hold} cellSize={cellSize} />
-					<Scoreboard score={score} lines={lines} />
+					<Scoreboard score={score} level= {level} lines={lines} />
 				</div>
 
 				<div 
