@@ -5,6 +5,7 @@ import useTetromino from '../../hooks/useTetromino'
 import useInterval from '../../hooks/useInterval'
 import NextUp from '../nextUp/NextUp'
 import Hold from '../hold/Hold'
+import Scoreboard from '../scoreboard/Scoreboard'
 
 const cellSize = 32
 const boardWidth = 10
@@ -20,6 +21,10 @@ const Board = () => {
 	const [board, setBoard] = useState(Array.from(Array(boardHeight), () => Array.from(Array(boardWidth), () => [0, 0, 0])))		// [occupied, locked, preview]
 	const { tetromino, nextUp, hold, moveTetromino, dropTetromino, rotateTetromino, resetTetromino, holdTetromino } = useTetromino(board)
 
+	const [rows, setRows] = useState({ value: 0 })
+	const [score, setScore] = useState(0)
+	const [lines, setLines] = useState(0)
+
 	useInterval(() => {
 		if(status) {
 			setTick(prev => prev + 1)
@@ -30,7 +35,7 @@ const Board = () => {
 	useEffect(() => {
 		let gameOver = false
 		setDelay(null)
-
+	
 		setBoard(prev => {
 			if(tetromino.new) {
 				moveTetromino(prev, 0, 0)
@@ -43,8 +48,7 @@ const Board = () => {
 					if(cell[0] &&! cell[1]) {
 						return [0, 0, 0]
 					}
-					cell[2] = 0
-					return cell
+					return [cell[0], cell[1], 0]
 				})
 			)
 			
@@ -76,12 +80,14 @@ const Board = () => {
 				}
 				
 				rows++
+				// Remove completed rows
 				newBoard.splice(length - i, 1)
 			})
-
-			// Remove completed rows
+			
 			if(rows) {
+				// Add new empty rows on top 
 				newBoard.unshift(...Array.from(Array(rows), () => Array.from(Array(boardWidth), () => [0, 0, 0])))
+				setRows({ value: rows })
 			}
 
 			// console.log("tetromino", tetromino)
@@ -104,6 +110,12 @@ const Board = () => {
 			alert("game over")
 		}
 	}, [gameOver])
+
+	useEffect(() => {
+		// Calc lines and score
+		setScore(prev => prev + rows.value)
+		setLines(prev => prev + rows.value)
+	}, [rows])
 
 	const onMove = ({ key }) => {
 		// console.log("onMove", key)
@@ -162,7 +174,10 @@ const Board = () => {
 
 
 			<div className="flex">
-				<Hold hold={hold} cellSize={cellSize} />
+				<div className="left">
+					<Hold hold={hold} cellSize={cellSize} />
+					<Scoreboard score={score} lines={lines} />
+				</div>
 
 				<div 
 					className="board" 

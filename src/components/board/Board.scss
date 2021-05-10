@@ -1,5 +1,11 @@
 .flex {
     display: flex;
+
+    .left {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
     
     .board {
         display: flex;
