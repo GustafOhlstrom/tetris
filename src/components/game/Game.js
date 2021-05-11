@@ -14,7 +14,7 @@ import useSaveScore from '../../hooks/useSaveScore'
 import { cellSize, levels } from '../../constants'
 
 const Game = () => {
-	const { tetromino, nextUp, hold, moveTetromino, dropTetromino, rotateTetromino, resetTetromino, holdTetromino } = useTetromino(null)
+	const { tetromino, nextUp, hold, moveTetromino, dropTetromino, rotateTetromino, resetTetromino, holdTetromino } = useTetromino()
 	const { board, updateBoard, newBoard, clearedRows } = useBoard()
 	const { score, lines, level, resetStats } = useStats(clearedRows)
 	const { saveScore, setSaveScore, highScore, setHighScore, loading: saveScoreLoading } = useSaveScore('marathon')

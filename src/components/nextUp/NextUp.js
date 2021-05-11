@@ -1,6 +1,6 @@
 import './NextUp.scss'
 import React from 'react'
-import { tetrominos } from '../../constants/tetrominos'
+import { tetrominos } from '../../constants'
 import Cell from '../cell/Cell'
 
 const NextUp = ({ nextUp, cellSize }) => (
@@ -12,6 +12,7 @@ const NextUp = ({ nextUp, cellSize }) => (
 	>
 		{
 			nextUp && nextUp.map((type, i) => (
+				i < 3 && 
 				<div 
 					className="next-up-tetromino"
 					key={'nu-t' + i}

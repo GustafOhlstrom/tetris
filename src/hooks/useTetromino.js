@@ -1,36 +1,21 @@
 import { useCallback, useEffect, useState } from "react"
-import { tetrominos } from '../constants/tetrominos'
+import { boardWidth, boardHeight, tetrominos, types, wallKicksTests, wallKicksTestsI } from '../constants'
 
-const boardWidth = 10
-const boardHeight = 20
+const getRandomType = () => {
+	return types.sort(() => 0.5 - Math.random())
+}
 
-const type = Object.keys(tetrominos)[Math.floor(Math.random() * 6)]
-
-const wallKicksTests= [
-	[[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, 2]],
-	[[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]],
-	[[0, 0], [1, 0], [1, 1], [0, -2], [1, -2]],
-	[[0, 0], [-1, 0], [-1, -1], [0, 2], [-1, 2]]
-]
-
-const wallKicksTestsI = [
-	[[0, 0], [-2, 0], [1, 0], [-2, -1], [1, 2]],
-	[[0, 0], [-1, 0], [2, 0], [-1, 2], [2, -1]],
-	[[0, 0], [2, 0], [-1, 0], [2, 1], [-1, -2]],
-	[[0, 0], [1, 0], [-2, 0], [1, -2], [-2, 1]]
-]
-
-const useTetromino = board => {
-	const [nextUp, setNextUp] = useState([...Array(3)].map(() => Object.keys(tetrominos)[Math.floor(Math.random() * 6)]))
+const useTetromino = () => {
+	const [nextUp, setNextUp] = useState(getRandomType)
 	const [tetromino, setTetromino] = useState({
-		type: type,
-		shape: tetrominos[type],
+		type: nextUp[0],
+		shape: tetrominos[nextUp[0]],
 		pos: {
-			x: type === 'O' ? 4 : 3, 
-			y: type === 'I' ? -1 : 0
+			x: nextUp[0] === 'O' ? 4 : 3, 
+			y: nextUp[0] === 'I' ? -1 : 0
 		},
 		preview: {
-			x: type === 'O' ? 4 : 3, 
+			x: nextUp[0] === 'O' ? 4 : 3, 
 			y: 18
 		},
 		state: 0,
@@ -38,6 +23,10 @@ const useTetromino = board => {
 		new: true
 	})
 	const [hold, setHold] = useState([null, true])
+
+	useEffect(() => {
+		setNextUp(prev => prev.slice(1))
+	}, []);
 
 	useEffect(() => {
 		if(tetromino.locked) {
@@ -58,9 +47,12 @@ const useTetromino = board => {
 					new: true
 				})
 
-				const type = Object.keys(tetrominos)[Math.floor(Math.random() * 6)]
-				const newNextUp = [prev[1], prev[2], type]
-
+				let newNextUp = prev.slice(1)
+				if(newNextUp.length <= 3) {
+					console.log(newNextUp, getRandomType())
+					newNextUp = newNextUp.concat(getRandomType())
+				}
+				console.log(newNextUp)
 				return newNextUp
 			})
 
@@ -103,7 +95,7 @@ const useTetromino = board => {
 			const state = prev.state
 
 			// Get wallkick data depending on block
-			const wallKicks = type !== "I"
+			const wallKicks = prev.type !== "I"
 				? wallKicksTests
 				: wallKicksTestsI
 

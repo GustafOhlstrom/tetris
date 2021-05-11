@@ -24,6 +24,8 @@ const levels = [
 	20
 ]
 
+
+const types = ['I', 'J', 'L', 'O', 'S', 'T', 'Z']
 const tetrominos = {
 	I: [
 		[0, 0, 0, 0],
@@ -62,4 +64,18 @@ const tetrominos = {
 	]
 }
 
-export { cellSize, boardWidth, boardHeight, levels, tetrominos }
+const wallKicksTests = [
+	[[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, 2]],
+	[[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]],
+	[[0, 0], [1, 0], [1, 1], [0, -2], [1, -2]],
+	[[0, 0], [-1, 0], [-1, -1], [0, 2], [-1, 2]]
+]
+
+const wallKicksTestsI = [
+	[[0, 0], [-2, 0], [1, 0], [-2, -1], [1, 2]],
+	[[0, 0], [-1, 0], [2, 0], [-1, 2], [2, -1]],
+	[[0, 0], [2, 0], [-1, 0], [2, 1], [-1, -2]],
+	[[0, 0], [1, 0], [-2, 0], [1, -2], [-2, 1]]
+]
+
+export { cellSize, boardWidth, boardHeight, levels, types, tetrominos, wallKicksTests, wallKicksTestsI }

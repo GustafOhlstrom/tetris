@@ -1,6 +1,6 @@
 import './Hold.scss'
 import React from 'react'
-import { tetrominos } from '../../constants/tetrominos'
+import { tetrominos } from '../../constants'
 import Cell from '../cell/Cell'
 
 const Hold = ({ hold, cellSize }) => (
