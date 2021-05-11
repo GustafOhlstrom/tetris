@@ -1,6 +1,7 @@
-const cellSize = 32
 const boardWidth = 10
 const boardHeight = 20
+let cellSize = 32
+const setCellSize = size => cellSize = size
 
 const levels = [
 	0.01667, 
@@ -78,4 +79,4 @@ const wallKicksTestsI = [
 	[[0, 0], [1, 0], [-2, 0], [1, -2], [-2, 1]]
 ]
 
-export { cellSize, boardWidth, boardHeight, levels, types, tetrominos, wallKicksTests, wallKicksTestsI }
+export { boardWidth, boardHeight, cellSize, setCellSize, levels, types, tetrominos, wallKicksTests, wallKicksTestsI }

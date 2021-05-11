@@ -12,6 +12,7 @@ body {
 	background-color: var(--background-1);
 	color: var(--color-1);
 	letter-spacing: 0.05rem;
+	overscroll-behavior-y: contain;
 }
 
 .container {

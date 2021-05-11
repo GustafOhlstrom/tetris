@@ -13,6 +13,11 @@ import useSaveScore from '../../hooks/useSaveScore'
 
 import { cellSize, levels } from '../../constants'
 
+let touchStart
+let touchFirstY
+let touchLastX
+let touchLastY
+
 const Game = () => {
 	const { tetromino, nextUp, hold, moveTetromino, dropTetromino, rotateTetromino, resetTetromino, holdTetromino } = useTetromino()
 	const { board, updateBoard, newBoard, clearedRows } = useBoard()
@@ -76,21 +81,25 @@ const Game = () => {
 	}
 
 	// Handle game inputs
-	const onMove = ({ key }) => {
+	const handleMove = ({ key }) => {
 		if(!status) {
 			return
 		}
 
 		switch(key) {
+			case "Up":
 			case 'ArrowUp':
 				rotateTetromino(board)
 				break
+			case "Right":
 			case 'ArrowRight':
 				moveTetromino(board, 1, 0)
 				break
+			case "Down":
 			case 'ArrowDown':
 				moveTetromino(board, 0, 1)
 				break
+			case "Left":
 			case 'ArrowLeft':
 				moveTetromino(board, -1, 0)
 				break
@@ -106,6 +115,64 @@ const Game = () => {
 				break
 		}
 	}
+
+	// Handle mobile (touch) game inputs
+	const handleTouchStart = e => {
+		touchLastX = e.targetTouches[0].pageX
+		touchLastY = e.targetTouches[0].pageY
+		touchFirstY = e.targetTouches[0].pageY
+		touchStart = null
+	}
+
+	const handleTouchMove = e => {
+		if(!status) {
+			return
+		}
+		
+		const newX = e.targetTouches[0].pageX
+		const newY = e.targetTouches[0].pageY
+		
+		// Down
+		if (newY - touchLastY >= cellSize) {
+			moveTetromino(board, 0, 1)
+			if(!touchStart) {
+				touchStart = (new Date()).getTime()
+			}
+			touchLastX = newX
+			touchLastY = newY
+			return
+		}
+
+		// Up
+		if (newY - touchLastY <= -cellSize) {
+			holdTetromino()
+			touchLastX = newX
+			touchLastY = newY
+			return
+		}
+
+		// Right
+		if (newX - touchLastX >= cellSize) {
+			moveTetromino(board, 1, 0)
+			touchLastX = newX
+			touchLastY = newY
+			return
+		}
+
+		// Left	
+		if (newX - touchLastX <= -cellSize) {
+			moveTetromino(board, -1, 0)
+			touchLastX = newX
+			touchLastY = newY
+			return
+		}
+	}
+
+	const handleTouchEnd = e => {
+		if (touchStart && (new Date()).getTime() - touchStart < 200 && touchLastY - touchFirstY > 70) {
+			dropTetromino(board)
+		}
+	}
 	
 	return (
 		<>
@@ -117,7 +184,11 @@ const Game = () => {
 
 			<div 
 				className="game"
-				onKeyDown={event => onMove(event)}
+				onKeyDown={e => handleMove(e)}
+				onTouchStart={e => handleTouchStart(e)}
+				onTouchMove={e => handleTouchMove(e)}
+				onTouchEnd={e => handleTouchEnd(e)}
+				onClick={() => rotateTetromino(board)}
 				tabIndex="0"
 			>
 				<div className="side-panel">
@@ -146,7 +217,6 @@ const Game = () => {
 					
 				</div>
 			</div>
-			
 			{
 				gameOver &&
 				<GameOver 
