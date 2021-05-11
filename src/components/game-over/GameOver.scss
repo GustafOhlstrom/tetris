@@ -1,0 +1,47 @@
+.gameover {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background: rgba(0, 0, 0, 0.22);
+	z-index: 9;
+
+	.gameover-content {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+		width: 100%;
+		max-width: 600px;
+		padding: 2rem;
+
+		background: var(--background-2);
+		box-shadow: var(--box-shadow-1);
+		border-radius: var(--border-radius-1);
+
+		overflow: none;
+
+		h1 {
+			margin-bottom: 1rem;
+		}
+
+		th {
+			padding-right: 16px;
+		}
+
+		td {
+			color: var(--color-theme-1)
+		}
+
+		button {
+			margin-bottom: 0;
+		}
+	}
+}

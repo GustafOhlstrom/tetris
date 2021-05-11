@@ -28,7 +28,7 @@ const Navbar = () => {
 			{
 				user &&
 				<>
-					<Link to="/">
+					<Link to="/leaderboard">
 						<div className="svg leaderboard">
 							<LeaderboardSvg />
 						</div>

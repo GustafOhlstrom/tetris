@@ -4,17 +4,20 @@ import Board from '../board/Board'
 import Hold from '../hold/Hold'
 import NextUp from '../nextUp/NextUp'
 import Scoreboard from '../scoreboard/Scoreboard'
+import GameOver from '../game-over/GameOver'
 import useTetromino from '../../hooks/useTetromino'
 import useInterval from '../../hooks/useInterval'
 import useBoard from '../../hooks/useBoard'
 import useStats from '../../hooks/useStats'
+import useSaveScore from '../../hooks/useSaveScore'
 
-import { cellSize, levels } from '../../constants' 
+import { cellSize, levels } from '../../constants'
 
 const Game = () => {
 	const { tetromino, nextUp, hold, moveTetromino, dropTetromino, rotateTetromino, resetTetromino, holdTetromino } = useTetromino(null)
 	const { board, updateBoard, newBoard, clearedRows } = useBoard()
-	const { score, lines, level } = useStats(clearedRows)
+	const { score, lines, level, resetStats } = useStats(clearedRows)
+	const { saveScore, setSaveScore, highScore, setHighScore, loading: saveScoreLoading } = useSaveScore('marathon')
 
 	const [gameOver, setGameOver] = useState(false)
 	const [status, setStatus] = useState(false)
@@ -45,17 +48,20 @@ const Game = () => {
 	useEffect(() => {
 		if(gameOver) {
 			setStatus(false)
-			alert("game over")
+			setSaveScore(score)
 		}
-	}, [gameOver])
+	}, [gameOver, score, setSaveScore])
 
 	// Start game or unpause game
 	const onStartGame = () => {
 		if(!status) {
 			if(gameOver) {
+				setSaveScore(null)
+				setHighScore(null)
+				setGameOver(false)
+				resetStats()
 				newBoard()
 				resetTetromino()
-				setGameOver(false)
 			}
 			
 			setStatus(true)
@@ -139,8 +145,19 @@ const Game = () => {
 
 					
 				</div>
-				
 			</div>
+			
+			{
+				gameOver &&
+				<GameOver 
+					saveScore={saveScore} 
+					highScore={highScore}
+					level= {level} 
+					lines={lines} 
+					loading={saveScoreLoading}
+					onStartGame={onStartGame}
+				/>
+			}
 		</>
 	)
 }

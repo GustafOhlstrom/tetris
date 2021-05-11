@@ -42,7 +42,13 @@ const useStats = clearedRows => {
 		})
 	}, [lines])
 
-	return { score, lines, level }
+	const resetStats = () => {
+		setScore(0)
+		setLines(0)
+		setLevel(1)
+	}
+
+	return { score, lines, level, resetStats }
 }
 
 export default useStats

@@ -4,18 +4,18 @@
 	grid-template-rows: repeat(2, 1fr);
 	grid-gap: 6px;
 		
-	width: 96px;
-	height: 96px;
+	width: 70px;
+	height: 70px;
 	margin: auto;
 	text-align: center;
 
 	animation: loader 1.75s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 
 	div {
-		width: 45px;
-		height: 45px;
+		width: 32px;
+		height: 32px;
 		border-radius: 4px;
-		background: var(--theme-color-1);
+		background: var(--color-theme-1);
 	}
 }
 
