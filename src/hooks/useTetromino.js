@@ -12,7 +12,7 @@ const useTetromino = () => {
 		shape: tetrominos[nextUp[0]],
 		pos: {
 			x: nextUp[0] === 'O' ? 4 : 3, 
-			y: nextUp[0] === 'I' ? -1 : 0
+			y: nextUp[0] === 'I' ? -2 : -1
 		},
 		preview: {
 			x: nextUp[0] === 'O' ? 4 : 3, 
@@ -36,7 +36,7 @@ const useTetromino = () => {
 					shape: tetrominos[prev[0]],
 					pos: {
 						x: prev[0] === 'O' ? 4 : 3, 
-						y: prev[0] === 'I' ? -1 : 0  
+						y: prev[0] === 'I' ? -2 : -1  
 					},
 					preview: {
 						x: prev[0] === 'O' ? 4 : 3, 

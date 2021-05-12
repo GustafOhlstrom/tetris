@@ -9,7 +9,7 @@ const useBoard = () => {
 		let gameOver = false
 		setBoard(prev => {
 			if(tetromino.new) {
-				moveTetromino(prev, 0, 0)
+				moveTetromino(prev, 0, 1)
 				return prev
 			}
 
@@ -30,7 +30,7 @@ const useBoard = () => {
 						const newY = tetromino.pos.y + y
 						const newX = tetromino.pos.x + x
 
-						if(newBoard[newY][newX][1]) {
+						if(!newBoard[newY] || !newBoard[newY][newX] || newBoard[newY][newX][1]) {
 							gameOver = true
 						} else {
 							newBoard[newY][newX] = [cell, tetromino.locked, 0]

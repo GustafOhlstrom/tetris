@@ -90,7 +90,7 @@ const Game = () => {
 
 	// Update delay depending on level change
 	useEffect(() => {
-		setDelay((1 / levels[level - 1]) / 60 * 1000)
+		setDelay(prev => prev ? ((1 / levels[level - 1]) / 60 * 1000) : prev)
 	}, [level])
 
 	// Stop game on gameover
