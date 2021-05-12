@@ -14,6 +14,7 @@ import useStats from '../../hooks/useStats'
 import useSaveScore from '../../hooks/useSaveScore'
 
 import { cellSize, levels } from '../../constants'
+import GameModes from '../game-modes/GameModes'
 
 let touchStart
 let touchFirstY
@@ -202,28 +203,14 @@ const Game = () => {
 	
 	return (
 		<>
+			{
+				pickMode && <GameModes onStartGame={onStartGame} setPickMode={setPickMode} />
+			}
+
 			<div className="game-actions">
 				{
 					!status && !tick
-						? <div className="game-actions-modes">
-							{ 
-								pickMode && 
-								<div 
- 									onClick={() => onStartGame('marathon')}
-									className="game-actions-mode"
-								>Play marathon</div> 
-							}
-
-							<PlaySvg onClick={() => setPickMode(prev => !prev)} />
-
-							{ 
-								pickMode && 
-								<div 
-									onClick={() => onStartGame('sprint')}
-									className="game-actions-mode"
-								>Play sprint</div> 
-							}
-						</div>
+						? <PlaySvg onClick={() => setPickMode(prev => !prev)} />
 						: <div onClick={onPauseGame} >
 							{
 								status 
@@ -279,6 +266,7 @@ const Game = () => {
 					lines={lines} 
 					loading={saveScoreLoading}
 					onStartGame={onStartGame}
+					setGameOver={setGameOver}
 				/>
 			}
 		</>

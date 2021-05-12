@@ -3,11 +3,12 @@
 	top: 0;
 	right: 0;
 	left: 0;
-	bottom: 0;
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	min-height: 100%;
+	padding: 1rem;
 
 	background: rgba(0, 0, 0, 0.22);
 	z-index: 9;
@@ -28,12 +29,29 @@
 
 		overflow: none;
 
-		h1 {
+		header {
+			display: block;
+			width: 100%;
 			margin-bottom: 1rem;
+
+			svg {
+				display: block;
+				height: 16px;
+				margin: 0 0 1rem auto;
+				cursor: pointer;
+
+				&:hover {
+					fill: var(--color-theme-1);
+				}
+			}
+
+			h1 {
+				text-align: center;
+			}
 		}
 
 		th {
-			padding-right: 16px;
+			padding-right: 1rem;
 		}
 
 		td {
@@ -41,7 +59,18 @@
 		}
 
 		button {
-			margin-bottom: 0;
+			max-width: 400px;
+			margin-top: 1.5rem;
 		}
 	}
+
+	@media screen and (min-width: 768px) {
+		.gameover-content {
+			header {
+				svg {
+					margin: 0 0 0 auto;
+				}
+			}
+		}
+    }
 }
