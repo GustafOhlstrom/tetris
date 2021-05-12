@@ -83,6 +83,16 @@
 						margin-bottom: 0.5rem;
 					}
 				}
+
+				.pb {
+					margin-bottom: 1rem;
+					color: var(--color-theme-1);
+					text-align: center;
+
+					span {
+						color: var(--color-theme-2);
+					}
+				}
 	
 				button {
 					margin: auto;

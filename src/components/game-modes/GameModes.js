@@ -3,7 +3,7 @@ import { ReactComponent as MarathonSvg } from '../../assets/icons/marathon.svg'
 import { ReactComponent as SprintSvg } from '../../assets/icons/sprint.svg'
 import { ReactComponent as CloseSvg } from '../../assets/icons/close.svg'
 
-const GameModes = ({ onStartGame, setPickMode }) => (
+const GameModes = ({ bestMarathon,  bestSprint, onStartGame, setPickMode }) => (
 	<div className="gamemodes">
 		<section className="gamemodes-content">
 			<header className="gamemodes-header">
@@ -24,6 +24,9 @@ const GameModes = ({ onStartGame, setPickMode }) => (
 						<p>Clear rows of blocks before they reach the top.</p>
 					</div>
 
+					{
+						bestMarathon && <p className="pb">Best score: <span>{bestMarathon}</span></p>
+					}
 					<button onClick={() => onStartGame('marathon')}>Play</button>
 				</section>
 
@@ -38,6 +41,9 @@ const GameModes = ({ onStartGame, setPickMode }) => (
 						<p>Get as many points as possible within 3 minutes</p>
 					</div>
 
+					{
+						bestSprint && <p className="pb">Best score: <span>{bestSprint}</span></p>
+					}
 					<button onClick={() => onStartGame('sprint')}>Play</button>
 				</section>
 			</div>

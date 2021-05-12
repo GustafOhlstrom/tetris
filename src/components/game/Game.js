@@ -12,6 +12,7 @@ import useInterval from '../../hooks/useInterval'
 import useBoard from '../../hooks/useBoard'
 import useStats from '../../hooks/useStats'
 import useSaveScore from '../../hooks/useSaveScore'
+import useBestScores from '../../hooks/useBestScores'
 
 import { cellSize, levels, countDown } from '../../constants'
 import GameModes from '../game-modes/GameModes'
@@ -31,6 +32,7 @@ const Game = () => {
 	const [delay, setDelay] = useState(null)
 	const [sprintTimer, setSprintTimer] = useState(0)
 
+	const { bestMarathon, bestSprint } = useBestScores()
 	const { tetromino, nextUp, hold, moveTetromino, dropTetromino, rotateTetromino, resetTetromino, holdTetromino } = useTetromino()
 	const { board, updateBoard, newBoard, clearedRows } = useBoard()
 	const { score, lines, level, resetStats } = useStats(clearedRows)
@@ -231,7 +233,13 @@ const Game = () => {
 	return (
 		<>
 			{
-				pickMode && <GameModes onStartGame={onStartGame} setPickMode={setPickMode} />
+				pickMode && 
+				<GameModes 
+					bestMarathon={bestMarathon}
+					bestSprint={bestSprint}
+					onStartGame={onStartGame} 
+					setPickMode={setPickMode}
+				/>
 			}
 
 			<div className="game-actions">
