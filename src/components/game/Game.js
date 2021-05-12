@@ -19,15 +19,17 @@ let touchLastX
 let touchLastY
 
 const Game = () => {
-	const { tetromino, nextUp, hold, moveTetromino, dropTetromino, rotateTetromino, resetTetromino, holdTetromino } = useTetromino()
-	const { board, updateBoard, newBoard, clearedRows } = useBoard()
-	const { score, lines, level, resetStats } = useStats(clearedRows)
-	const { saveScore, setSaveScore, highScore, setHighScore, loading: saveScoreLoading } = useSaveScore('marathon')
-
+	const [mode, setMode] = useState('marathon')
 	const [gameOver, setGameOver] = useState(false)
 	const [status, setStatus] = useState(false)
 	const [tick, setTick] = useState(0)
 	const [delay, setDelay] = useState(null)
+	const [sprintTimer, setSprintTimer] = useState(0)
+
+	const { tetromino, nextUp, hold, moveTetromino, dropTetromino, rotateTetromino, resetTetromino, holdTetromino } = useTetromino()
+	const { board, updateBoard, newBoard, clearedRows } = useBoard()
+	const { score, lines, level, resetStats } = useStats(clearedRows)
+	const { saveScore, setSaveScore, highScore, setHighScore, loading: saveScoreLoading } = useSaveScore(mode)
 
 	// Tracks ticks and move tetrominos if game is ongoing
 	useInterval(() => {
@@ -36,6 +38,16 @@ const Game = () => {
 			moveTetromino(board, 0, 1)
 		}
 	}, delay)
+
+	useInterval(() => {
+		if(mode === 'sprint' && status) {
+			setSprintTimer(prev => prev + 1)
+			
+			if(sprintTimer >= 180) {
+				setGameOver(true)
+			}
+		}
+	}, 1000)
 
 	// Update board after tetromino change
 	useEffect(() => {
@@ -58,17 +70,19 @@ const Game = () => {
 	}, [gameOver, score, setSaveScore])
 
 	// Start game or unpause game
-	const onStartGame = () => {
+	const onStartGame = mode => {
 		if(!status) {
 			if(gameOver) {
 				setSaveScore(null)
 				setHighScore(null)
+				setSprintTimer(0)
 				setGameOver(false)
 				resetStats()
 				newBoard()
 				resetTetromino()
 			}
 			
+			setMode(mode)
 			setStatus(true)
 		}
 
@@ -77,7 +91,15 @@ const Game = () => {
 
 	// Pause game
 	const onPauseGame = () => {
-		setDelay(prev => prev ? null : (1 / levels[level - 1]) / 60 * 1000)
+		setDelay(prev => {
+			if(prev) {
+				setStatus(false)
+				return null
+			} else {
+				setStatus(true)
+				return (1 / levels[level - 1]) / 60 * 1000
+			}
+		})
 	}
 
 	// Handle game inputs
@@ -177,9 +199,12 @@ const Game = () => {
 	return (
 		<>
 			{
-				status && tick
-					? <button onClick={onPauseGame}>{delay ? 'Pause Game' : 'Resume'}</button>
-					: <button onClick={onStartGame}>Start Game</button>
+				!status && !tick
+					? <div className="buttons">
+						<button onClick={() => onStartGame('marathon')}>Play Marathon</button>
+						<button onClick={() => onStartGame('sprint')}>Play Sprint</button>
+					</div>
+					: <button onClick={onPauseGame}>{status ? 'Pause Game' : 'Resume'}</button>
 			}
 
 			<div 
@@ -188,7 +213,7 @@ const Game = () => {
 				onTouchStart={e => handleTouchStart(e)}
 				onTouchMove={e => handleTouchMove(e)}
 				onTouchEnd={e => handleTouchEnd(e)}
-				onClick={() => rotateTetromino(board)}
+				onClick={() => status && rotateTetromino(board)}
 				tabIndex="0"
 			>
 				<div className="side-panel">
@@ -198,6 +223,8 @@ const Game = () => {
 					/>
 					
 					<Scoreboard
+						mode={mode}
+						timer={sprintTimer}
 						score={score} 
 						level= {level} 
 						lines={lines} 
@@ -220,6 +247,7 @@ const Game = () => {
 			{
 				gameOver &&
 				<GameOver 
+					mode={mode}
 					saveScore={saveScore} 
 					highScore={highScore}
 					level= {level} 

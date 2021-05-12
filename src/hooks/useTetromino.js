@@ -49,10 +49,8 @@ const useTetromino = () => {
 
 				let newNextUp = prev.slice(1)
 				if(newNextUp.length <= 3) {
-					console.log(newNextUp, getRandomType())
 					newNextUp = newNextUp.concat(getRandomType())
 				}
-				console.log(newNextUp)
 				return newNextUp
 			})
 

@@ -1,8 +1,20 @@
 import './Scoreboard.scss'
 import React from 'react'
 
-const Scoreboard = ({ score, level, lines }) => (
-	<div className="scoreboard">
+const Scoreboard = ({ mode, timer, score, level, lines }) => {
+	let min = Math.floor((180 - timer) / 60)
+	let sec = ('0' + ((180 - timer) - min * 60)).slice(-2)
+	min = ('0' + min).slice(-2)
+
+	return <div className="scoreboard">
+		{
+			mode === 'sprint' && 
+			<div className="scoreboard-item">
+				<div>Timer</div>
+				<div>{min}:{sec}</div>
+			</div>
+		}
+
 		<div className="scoreboard-item">
 			<div>Score</div>
 			<div>{score}</div>
@@ -18,6 +30,6 @@ const Scoreboard = ({ score, level, lines }) => (
 			<div>{lines}</div>
 		</div>
 	</div>
-)
+}
 
 export default Scoreboard

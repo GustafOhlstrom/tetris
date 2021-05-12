@@ -2,7 +2,7 @@ import './GameOver.scss'
 import React from 'react'
 import Loader from '../loader/Loader'
 
-const GameOver = ({ saveScore, highScore, level, lines, loading, onStartGame }) => (
+const GameOver = ({ mode, saveScore, highScore, level, lines, loading, onStartGame }) => (
 	<div className="gameover">
 		<div className="gameover-content">
 			<h1>{highScore === saveScore ? 'New High Score!' : 'Game over'}</h1>
@@ -28,7 +28,7 @@ const GameOver = ({ saveScore, highScore, level, lines, loading, onStartGame }) 
 							</tbody>
 						</table>
 
-						<button onClick={onStartGame}>Play Again</button>
+						<button onClick={() => onStartGame(mode)}>Play Again</button>
 					</>
 			}
 		</div>
