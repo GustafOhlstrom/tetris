@@ -1,5 +1,7 @@
 import './Game.scss'
 import React, { useEffect, useState } from 'react'
+import { ReactComponent as PauseSvg } from '../../assets/icons/pause.svg'
+import { ReactComponent as PlaySvg } from '../../assets/icons/play.svg'
 import Board from '../board/Board'
 import Hold from '../hold/Hold'
 import NextUp from '../nextUp/NextUp'
@@ -19,6 +21,7 @@ let touchLastX
 let touchLastY
 
 const Game = () => {
+	const [pickMode, setPickMode] = useState(false)
 	const [mode, setMode] = useState('marathon')
 	const [gameOver, setGameOver] = useState(false)
 	const [status, setStatus] = useState(false)
@@ -82,6 +85,7 @@ const Game = () => {
 				resetTetromino()
 			}
 			
+			setPickMode(false)
 			setMode(mode)
 			setStatus(true)
 		}
@@ -198,14 +202,37 @@ const Game = () => {
 	
 	return (
 		<>
-			{
-				!status && !tick
-					? <div className="buttons">
-						<button onClick={() => onStartGame('marathon')}>Play Marathon</button>
-						<button onClick={() => onStartGame('sprint')}>Play Sprint</button>
-					</div>
-					: <button onClick={onPauseGame}>{status ? 'Pause Game' : 'Resume'}</button>
-			}
+			<div className="game-actions">
+				{
+					!status && !tick
+						? <div className="game-actions-modes">
+							{ 
+								pickMode && 
+								<div 
+ 									onClick={() => onStartGame('marathon')}
+									className="game-actions-mode"
+								>Play marathon</div> 
+							}
+
+							<PlaySvg onClick={() => setPickMode(prev => !prev)} />
+
+							{ 
+								pickMode && 
+								<div 
+									onClick={() => onStartGame('sprint')}
+									className="game-actions-mode"
+								>Play sprint</div> 
+							}
+						</div>
+						: <div onClick={onPauseGame} >
+							{
+								status 
+									? <PauseSvg />
+									: <PlaySvg />
+							}
+						</div>
+				}
+			</div>
 
 			<div 
 				className="game"
@@ -240,8 +267,6 @@ const Game = () => {
 						nextUp={nextUp} 
 						cellSize={cellSize} 
 					/>
-
-					
 				</div>
 			</div>
 			{

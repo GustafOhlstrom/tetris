@@ -29,3 +29,43 @@
 		}
 	}
 }
+
+.game-actions {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+
+	svg {
+		height: 3rem;
+		width: 3rem;
+		margin: 0 0 1rem 0;
+	
+		fill: var(--color-theme-1);
+		&:hover {
+			cursor: pointer;
+			fill: var(--color-theme-2);
+		}
+	}
+
+	.game-actions-modes {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: 1rem;
+
+		svg {
+			margin: 0 1rem;
+		}
+
+		.game-actions-mode {
+			color: var(--color-theme-1);
+
+			&:hover {
+				cursor: pointer;
+				color: var(--color-theme-2);
+				text-decoration: underline;
+			}
+		}
+	}
+}
