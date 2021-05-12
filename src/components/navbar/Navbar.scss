@@ -52,7 +52,7 @@
         transition: height 0.2s ease-out;
 
         &.dropdown-open {
-            height: 4rem;
+            height: 9rem;
         }
 
         li {
@@ -82,6 +82,10 @@
     
             background: var(--background-2);
             border-radius: var(--border-radius-1);
+            
+            &.dropdown-open {
+                height: 8rem;
+            }
     
             li {
                 text-align: left;

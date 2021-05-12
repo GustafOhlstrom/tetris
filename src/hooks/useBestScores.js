@@ -14,7 +14,7 @@ const useBestScores = () => {
 			.onSnapshot(snapshot => {
 				if (snapshot.exists) {
 					const data = snapshot.data()
-					console.log("test", data)
+					
 					if(data['marathon']?.length > 0) {
 						setBestMarathon(Math.max(...data['marathon']))
 					}

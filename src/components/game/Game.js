@@ -27,6 +27,7 @@ const Game = () => {
 	const [mode, setMode] = useState('marathon')
 	const [newGameCounter, setNewGameCounter] = useState(null)
 	const [gameOver, setGameOver] = useState(false)
+	const [displayGameOver, setDisplayGameOver] = useState(false)
 	const [status, setStatus] = useState(false)
 	const [tick, setTick] = useState(0)
 	const [delay, setDelay] = useState(null)
@@ -49,23 +50,23 @@ const Game = () => {
 	useInterval(() => {
 		if(mode === 'sprint' && status) {
 			setSprintTimer(prev => prev + 1)
-			
 			if(sprintTimer >= 180) {
 				setGameOver(true)
+				setDisplayGameOver(true)
 			}
 		}
-	}, status ? 1000 : 0)	
+	}, 1000)	
 	
 	useInterval(() => {
 		if(newGameCounter) {
+			setTick(1)
 			setNewGameCounter(prev => prev < 3 ? prev + 1 : 0)
 
 			if(newGameCounter >= 3) {
 				if(gameOver) {
+					setGameOver(false)
 					setSaveScore(null)
 					setHighScore(null)
-					setSprintTimer(0)
-					setGameOver(false)
 					resetStats()
 					newBoard()
 					resetTetromino()
@@ -96,27 +97,18 @@ const Game = () => {
 	useEffect(() => {
 		if(gameOver) {
 			setStatus(false)
+			setDisplayGameOver(true)
 			setSaveScore(score)
 		}
 	}, [gameOver, score, setSaveScore])
-
-	
-
-	useInterval(() => {
-		if(mode === 'sprint' && status) {
-			setSprintTimer(prev => prev + 1)
-			
-			if(sprintTimer >= 180) {
-				setGameOver(true)
-			}
-		}
-	}, 1000)
 
 	// Start game or unpause game
 	const onStartGame = mode => {
 		if(!status) {
 			setPickMode(false)
 			setMode(mode)
+			setDisplayGameOver(false)
+			setSprintTimer(0)
 			setNewGameCounter(1)
 		}
 
@@ -244,7 +236,7 @@ const Game = () => {
 
 			<div className="game-actions">
 				{
-					!status && !tick
+					(!status && !tick) || gameOver
 						? <PlaySvg onClick={() => !newGameCounter && setPickMode(prev => !prev)} />
 						: <div onClick={onPauseGame} >
 							{
@@ -256,47 +248,55 @@ const Game = () => {
 				}
 			</div>
 
-			<div 
-				className="game"
-				onKeyDown={e => handleMove(e)}
-				onTouchStart={e => handleTouchStart(e)}
-				onTouchMove={e => handleTouchMove(e)}
-				onTouchEnd={e => handleTouchEnd(e)}
-				onClick={() => status && rotateTetromino(board)}
-				tabIndex="0"
-			>
-				<div className="side-panel">
-					<Hold
-						hold={hold} 
-						cellSize={cellSize} 
-					/>
-					
-					<Scoreboard
-						mode={mode}
-						timer={sprintTimer}
-						score={score} 
-						level= {level} 
-						lines={lines} 
-					/>
-				</div>
-
-				<Board 
-					board={newGameCounter && newGameCounter <= 3
-						? countDown[newGameCounter - 1] 
-						: board
-					}
-					countdown={newGameCounter}
-				/>
-
-				<div className="side-panel">
-					<NextUp 
-						nextUp={nextUp} 
-						cellSize={cellSize} 
-					/>
-				</div>
-			</div>
 			{
-				gameOver &&
+				<div 
+					className="game"
+					onKeyDown={e => handleMove(e)}
+					onTouchStart={e => handleTouchStart(e)}
+					onTouchMove={e => handleTouchMove(e)}
+					onTouchEnd={e => handleTouchEnd(e)}
+					onClick={() => status && rotateTetromino(board)}
+					tabIndex="0"
+				>
+					<div className="side-panel">
+						<Hold
+							hold={tick || newGameCounter ? hold : [null, true]} 
+							cellSize={cellSize} 
+						/>
+						
+						{
+							tick || newGameCounter
+								? <Scoreboard
+									mode={mode}
+									timer={sprintTimer}
+									score={score} 
+									level= {level} 
+									lines={lines} 
+								/>
+								: <></>
+						}
+						
+					</div>
+
+					<Board 
+						board={newGameCounter && newGameCounter <= 3
+							? countDown[newGameCounter - 1] 
+							: board
+						}
+						countdown={newGameCounter}
+					/>
+
+					<div className="side-panel">
+						<NextUp 
+							nextUp={tick || newGameCounter ? nextUp : []} 
+							cellSize={cellSize} 
+						/>
+					</div>
+				</div>
+			}
+			
+			{
+				displayGameOver &&
 				<GameOver 
 					mode={mode}
 					saveScore={saveScore} 
@@ -305,7 +305,7 @@ const Game = () => {
 					lines={lines} 
 					loading={saveScoreLoading}
 					onStartGame={onStartGame}
-					setGameOver={setGameOver}
+					setDisplayGameOver={setDisplayGameOver}
 				/>
 			}
 		</>

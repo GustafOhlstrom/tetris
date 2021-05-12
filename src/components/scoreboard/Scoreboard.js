@@ -2,9 +2,18 @@ import './Scoreboard.scss'
 import React from 'react'
 
 const Scoreboard = ({ mode, timer, score, level, lines }) => {
-	let min = Math.floor((180 - timer) / 60)
-	let sec = ('0' + ((180 - timer) - min * 60)).slice(-2)
-	min = ('0' + min).slice(-2)
+	let min
+	let sec
+	
+	if(timer >= 180) {
+		min = '00'
+		sec = '00'
+	} else {
+		let tempMin = Math.floor((180 - timer) / 60)
+		sec = ('0' + ((180 - timer) - tempMin * 60)).slice(-2)
+		min = ('0' + tempMin).slice(-2)
+	}
+	
 
 	return <div className="scoreboard">
 		{

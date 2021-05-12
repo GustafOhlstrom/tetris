@@ -3,11 +3,11 @@ import { ReactComponent as CloseSvg } from '../../assets/icons/close.svg'
 import React from 'react'
 import Loader from '../loader/Loader'
 
-const GameOver = ({ mode, saveScore, highScore, level, lines, loading, onStartGame, setGameOver }) => (
+const GameOver = ({ mode, saveScore, highScore, level, lines, loading, onStartGame, setDisplayGameOver }) => (
 	<div className="gameover">
 		<div className="gameover-content">
 			<header>
-				<CloseSvg onClick={() => setGameOver(false)}/>
+				<CloseSvg onClick={() => setDisplayGameOver(false)}/>
 				<h1>{highScore === saveScore ? 'New High Score!' : 'Game over'}</h1>
 			</header>
 
