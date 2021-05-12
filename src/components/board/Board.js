@@ -3,7 +3,7 @@ import React from 'react'
 import Cell from '../cell/Cell'
 import { cellSize, boardWidth, boardHeight } from '../../constants' 
 
-const Board = ({ board }) => (
+const Board = ({ board, countdown }) => (
 	<div 
 		className="board" 
 		style={{
@@ -14,7 +14,7 @@ const Board = ({ board }) => (
 		{
 			board.map((row, i) => (
 				row.map((cell, j) => (
-					<Cell key={i + '-' + j} size={cellSize} tetromino={cell[0]} preview={cell[2]} />
+					<Cell key={i + '-' + j} size={cellSize} tetromino={countdown ? cell : cell[0]} preview={countdown ? 0 : cell[2]} />
 				))
 			))
 		}

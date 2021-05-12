@@ -13,7 +13,7 @@ import useBoard from '../../hooks/useBoard'
 import useStats from '../../hooks/useStats'
 import useSaveScore from '../../hooks/useSaveScore'
 
-import { cellSize, levels } from '../../constants'
+import { cellSize, levels, countDown } from '../../constants'
 import GameModes from '../game-modes/GameModes'
 
 let touchStart
@@ -24,6 +24,7 @@ let touchLastY
 const Game = () => {
 	const [pickMode, setPickMode] = useState(false)
 	const [mode, setMode] = useState('marathon')
+	const [newGameCounter, setNewGameCounter] = useState(null)
 	const [gameOver, setGameOver] = useState(false)
 	const [status, setStatus] = useState(false)
 	const [tick, setTick] = useState(0)
@@ -51,14 +52,38 @@ const Game = () => {
 				setGameOver(true)
 			}
 		}
-	}, 1000)
+	}, status ? 1000 : 0)	
+	
+	useInterval(() => {
+		if(newGameCounter) {
+			setNewGameCounter(prev => prev < 3 ? prev + 1 : 0)
+
+			if(newGameCounter >= 3) {
+				if(gameOver) {
+					setSaveScore(null)
+					setHighScore(null)
+					setSprintTimer(0)
+					setGameOver(false)
+					resetStats()
+					newBoard()
+					resetTetromino()
+				}
+
+				setStatus(true)
+			}
+		}
+	}, newGameCounter ? 1000 : null)
+
 
 	// Update board after tetromino change
 	useEffect(() => {
+		if(!status) {
+			return
+		}
 		setDelay(null)
 		updateBoard(tetromino, moveTetromino, setGameOver)
 		setDelay((1 / levels[level - 1]) / 60 * 1000)
-	}, [tetromino, moveTetromino, level, updateBoard])
+	}, [tetromino, moveTetromino, level, updateBoard, status])
 
 	// Update delay depending on level change
 	useEffect(() => {
@@ -73,22 +98,24 @@ const Game = () => {
 		}
 	}, [gameOver, score, setSaveScore])
 
+	
+
+	useInterval(() => {
+		if(mode === 'sprint' && status) {
+			setSprintTimer(prev => prev + 1)
+			
+			if(sprintTimer >= 180) {
+				setGameOver(true)
+			}
+		}
+	}, 1000)
+
 	// Start game or unpause game
 	const onStartGame = mode => {
 		if(!status) {
-			if(gameOver) {
-				setSaveScore(null)
-				setHighScore(null)
-				setSprintTimer(0)
-				setGameOver(false)
-				resetStats()
-				newBoard()
-				resetTetromino()
-			}
-			
 			setPickMode(false)
 			setMode(mode)
-			setStatus(true)
+			setNewGameCounter(1)
 		}
 
 		setDelay((1 / levels[level - 1]) / 60 * 1000)
@@ -210,7 +237,7 @@ const Game = () => {
 			<div className="game-actions">
 				{
 					!status && !tick
-						? <PlaySvg onClick={() => setPickMode(prev => !prev)} />
+						? <PlaySvg onClick={() => !newGameCounter && setPickMode(prev => !prev)} />
 						: <div onClick={onPauseGame} >
 							{
 								status 
@@ -246,7 +273,11 @@ const Game = () => {
 				</div>
 
 				<Board 
-					board={board}
+					board={newGameCounter && newGameCounter <= 3
+						? countDown[newGameCounter - 1] 
+						: board
+					}
+					countdown={newGameCounter}
 				/>
 
 				<div className="side-panel">
