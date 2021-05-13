@@ -1,70 +1,66 @@
 .game {
-	display: flex;
-
-	&:focus-visible {
-		outline: none;
-	}
-
-	.side-panel {
-		display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-	}
-}
-
-.buttons {
-	width: 100%;
-	display: flex;
-	align-items: center;
-
-	button {
-		width: 50%;
-
-		&:first-of-type {
-			margin-right: 4px;
-		}
-
-		&:last-of-type {
-			margin-left: 4px;
-		}
-	}
-}
-
-.game-actions {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-
-	svg {
-		height: 3rem;
-		width: 3rem;
-		margin: 0 0 1rem 0;
-	
-		fill: var(--color-theme-1);
-		&:hover {
-			cursor: pointer;
-			fill: var(--color-theme-2);
-		}
-	}
-
-	.game-actions-modes {
+	.game-actions {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		margin-bottom: 1rem;
-
+		width: 100%;
+	
 		svg {
-			margin: 0 1rem;
-		}
-
-		.game-actions-mode {
-			color: var(--color-theme-1);
-
+			height: 40px;
+			width: 40px;
+			margin: 0 0 8px 0;
+		
+			fill: var(--color-theme-1);
 			&:hover {
 				cursor: pointer;
-				color: var(--color-theme-2);
-				text-decoration: underline;
+				fill: var(--color-theme-2);
+			}
+		}
+	}
+
+	.game-panels {
+		display: flex;
+		
+		&:focus-visible {
+			outline: none;
+		}
+
+		.side-panel {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			margin: 0 8px;
+		}
+	}
+
+	@media screen and (min-width: 500px) {
+		.game-actions {
+			svg {
+				height: 48px;
+				width: 48px;
+				margin: 0 0 16px 0;
+			}
+		}
+
+        .game-panels {
+			.side-panel {
+				&:first-of-type {
+					margin: 0 24px 0 16px;
+				}
+
+				&:last-of-type {
+					margin: 0 16px 0 24px;
+				}
+			}
+		}
+    }
+
+	@media screen and (max-height: 500px) {
+		.game-actions {
+			svg {
+				height: 24px;
+				width: 24px;
+				margin: 0 0 8px 0;
 			}
 		}
 	}

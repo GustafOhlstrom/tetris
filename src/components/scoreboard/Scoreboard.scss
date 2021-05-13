@@ -1,7 +1,33 @@
 .scoreboard {
 	text-align: center;
-
+    color: var(--color-theme-1);
+	
 	.scoreboard-item {
 		margin-bottom: 16px;
+	}
+
+	@media screen and (max-height: 500px) {
+		position: relative;
+
+		.scoreboard-container {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			display: flex;
+			flex-direction: column-reverse;
+			align-items: flex-end;
+		}
+
+		.scoreboard-item {
+			display: flex;
+			align-items: center;
+			margin-bottom: 4px;
+
+			font-size: 12px;
+
+			div:first-of-type {
+				margin-right: 4px;
+			}
+		}
 	}
 }

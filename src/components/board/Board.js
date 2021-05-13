@@ -1,9 +1,9 @@
 import './Board.scss'
 import React from 'react'
 import Cell from '../cell/Cell'
-import { cellSize, boardWidth, boardHeight } from '../../constants' 
+import { boardWidth, boardHeight } from '../../constants' 
 
-const Board = ({ board, countdown }) => (
+const Board = ({ board, cellSize, countdown }) => (
 	<div 
 		className="board" 
 		style={{

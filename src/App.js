@@ -9,18 +9,8 @@ import ForgotPassword from './pages/forgot-password/ForgotPassword';
 import AuthContextProvider from './contexts/AuthContext'
 import AuthRoute from './components/AuthRoute';
 import Leaderboards from './pages/leaderboard/Leaderboards';
-import { boardWidth, boardHeight, setCellSize } from './constants';
 
 function App() {
-	const { innerWidth, innerHeight } = window;
-	const maxCellWidth = (innerWidth - 24*2 ) / (boardWidth + 8)
-	const maxCellHeight = (innerHeight - 24*4 - 72*2) / boardHeight
-	let cellSize = maxCellWidth < maxCellHeight ? maxCellWidth : maxCellHeight
-	if(cellSize > 32) {
-		cellSize = 32
-	}
-	setCellSize(cellSize)
-
 	return (
 		<AuthContextProvider>
 			<Navbar />

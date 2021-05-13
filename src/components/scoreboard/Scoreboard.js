@@ -16,27 +16,29 @@ const Scoreboard = ({ mode, timer, score, level, lines }) => {
 	
 
 	return <div className="scoreboard">
-		{
-			mode === 'sprint' && 
+		<div className="scoreboard-container">
+			{
+				mode === 'sprint' && 
+				<div className="scoreboard-item">
+					<div>Timer</div>
+					<div>{min}:{sec}</div>
+				</div>
+			}
+
 			<div className="scoreboard-item">
-				<div>Timer</div>
-				<div>{min}:{sec}</div>
+				<div>Score</div>
+				<div>{score}</div>
 			</div>
-		}
 
-		<div className="scoreboard-item">
-			<div>Score</div>
-			<div>{score}</div>
-		</div>
+			<div className="scoreboard-item">
+				<div>Level</div>
+				<div>{level}</div>
+			</div>
 
-		<div className="scoreboard-item">
-			<div>Level</div>
-			<div>{level}</div>
-		</div>
-
-		<div className="scoreboard-item">
-			<div>Lines</div>
-			<div>{lines}</div>
+			<div className="scoreboard-item">
+				<div>Lines</div>
+				<div>{lines}</div>
+			</div>
 		</div>
 	</div>
 }

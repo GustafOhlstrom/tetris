@@ -15,7 +15,7 @@ const GameOverSave = ({ mode, onStartGame, setDisplayGameOver, setDisplayGameOve
 			setDisplayGameOver(true)
 			setDisplayGameOverSave(false)
 		}
-	}, [user, score, setDisplayGameOver, setSaveScore])
+	}, [user, score, setDisplayGameOver, setSaveScore, setDisplayGameOverSave])
 
 	return <div className="gameover-save">
 		<div className="gameover-save-content">

@@ -1,7 +1,5 @@
 const boardWidth = 10
 const boardHeight = 20
-let cellSize = 32
-const setCellSize = size => cellSize = size
 
 const levels = [
 	0.01667, 
@@ -148,4 +146,4 @@ const countDown = [
 	]
 ]
 
-export { boardWidth, boardHeight, cellSize, setCellSize, levels, types, tetrominos, wallKicksTests, wallKicksTestsI, countDown }
+export { boardWidth, boardHeight, levels, types, tetrominos, wallKicksTests, wallKicksTestsI, countDown }

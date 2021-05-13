@@ -14,10 +14,11 @@ import useStats from '../../hooks/useStats'
 import useSaveScore from '../../hooks/useSaveScore'
 import useBestScores from '../../hooks/useBestScores'
 
-import { cellSize, levels, countDown } from '../../constants'
+import { levels, countDown } from '../../constants'
 import GameModes from '../game-modes/GameModes'
 import GameOverSave from '../game-over-save/GameOverSave'
 import { AuthContext } from '../../contexts/AuthContext'
+import useCellSize from '../../hooks/useCellSize'
 
 let touchStart
 let touchFirstY
@@ -25,6 +26,8 @@ let touchLastX
 let touchLastY
 
 const Game = () => {
+	const { cellSize } = useCellSize()
+
 	const [pickMode, setPickMode] = useState(false)
 	const [mode, setMode] = useState('marathon')
 	const [newGameCounter, setNewGameCounter] = useState(null)
@@ -96,6 +99,10 @@ const Game = () => {
 	useEffect(() => {
 		setDelay(prev => prev ? ((1 / levels[level - 1]) / 60 * 1000) : prev)
 	}, [level])
+
+	useEffect(() => {
+		console.log("test", cellSize)
+	}, [cellSize])
 
 	// Stop game on gameover
 	useEffect(() => {
@@ -231,7 +238,7 @@ const Game = () => {
 	}
 	
 	return (
-		<>
+		<div className="game">
 			{
 				pickMode && 
 				<GameModes 
@@ -258,7 +265,7 @@ const Game = () => {
 
 			{
 				<div 
-					className="game"
+					className="game-panels"
 					onKeyDown={e => handleMove(e)}
 					onTouchStart={e => handleTouchStart(e)}
 					onTouchMove={e => handleTouchMove(e)}
@@ -291,6 +298,7 @@ const Game = () => {
 							? countDown[newGameCounter - 1] 
 							: board
 						}
+						cellSize={cellSize}
 						countdown={newGameCounter}
 					/>
 
@@ -328,7 +336,7 @@ const Game = () => {
 					setSaveScore={setSaveScore}
 				/>
 			}
-		</>
+		</div>
 	)
 }
 
