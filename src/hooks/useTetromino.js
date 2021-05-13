@@ -24,10 +24,12 @@ const useTetromino = () => {
 	})
 	const [hold, setHold] = useState([null, true])
 
+	// Remove first tetromino from next up
 	useEffect(() => {
 		setNextUp(prev => prev.slice(1))
 	}, []);
 
+	// Create new tetromino if previous one locked in place
 	useEffect(() => {
 		if(tetromino.locked) {
 			setNextUp(prev => {
@@ -58,6 +60,7 @@ const useTetromino = () => {
 		}
 	}, [tetromino]);
 
+	// Drop tetromino as far as possible
 	const dropTetromino = board => {
 		setTetromino(prev => {
 			let newX = prev.pos.x
@@ -80,6 +83,7 @@ const useTetromino = () => {
 		})
 	}
 
+	// Rotate tetromino
 	const rotateTetromino = board => {
 		setTetromino(prev => {
 			if(prev.type === "O") {
@@ -135,6 +139,7 @@ const useTetromino = () => {
 		})
 	}
 	
+	// Check collision for specific cell
 	const isCollision = useCallback((board, x, y) => {
 		// Check board width
 		if(x > boardWidth - 1 || x < 0) {
@@ -154,6 +159,7 @@ const useTetromino = () => {
 		return false
 	}, [])
 
+	// Check collision for all cell in tetromino
 	const detectCollision =  useCallback((board, shape, newX, newY, moveDown) => {
 		let result = {
 			collision: false,
@@ -178,6 +184,7 @@ const useTetromino = () => {
 		return result
 	}, [isCollision])
 
+	// Move tetromino
 	const moveTetromino = useCallback((board, x, y) => {
 		setTetromino(prev => {
 			const newX = prev.pos.x + x
@@ -224,19 +231,33 @@ const useTetromino = () => {
 		})
 	}, [detectCollision])
 
+	// Reset tetromino
 	const resetTetromino = () => {
-		const type = Object.keys(tetrominos)[Math.floor(Math.random() * 6)]
-		setTetromino({
-			type: type,
-			shape: tetrominos[type],
-			pos: {
-				x: type === 'O' ? 4 : 3, 
-				y: 0 
-			},
-			state: 0,
-			locked: false,
-			new: true
+		setNextUp(prev => {
+			setTetromino({
+				type: prev[0],
+				shape: tetrominos[prev[0]],
+				pos: {
+					x: prev[0] === 'O' ? 4 : 3, 
+					y: prev[0] === 'I' ? -2 : -1  
+				},
+				preview: {
+					x: prev[0] === 'O' ? 4 : 3, 
+					y: 18
+				},
+				state: 0,
+				locked: false,
+				new: true
+			})
+
+			let newNextUp = prev.slice(1)
+			if(newNextUp.length <= 3) {
+				newNextUp = newNextUp.concat(getRandomType())
+			}
+			return newNextUp
 		})
+
+		setHold(prevHold => [prevHold[0], true])
 	}
 
 	const holdTetromino = () => {
@@ -253,7 +274,7 @@ const useTetromino = () => {
 					shape: tetrominos[type],
 					pos: {
 						x: type === 'O' ? 4 : 3, 
-						y: type === 'I' ? -1 : 0  
+						y: type === 'I' ? -2 : -1
 					},
 					preview: {
 						x: type === 'O' ? 4 : 3, 

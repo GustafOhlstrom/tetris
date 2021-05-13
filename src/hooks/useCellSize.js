@@ -4,6 +4,7 @@ import { boardWidth, boardHeight } from '../constants'
 const useCellSize = () => {
 	const [cellSize, setCellSize] = useState(0)
 
+	// Update cellsize based in window size
 	useLayoutEffect(() => {
 		function updateSize() {
 			const { innerWidth, innerHeight } = window;

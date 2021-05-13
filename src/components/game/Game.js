@@ -54,6 +54,7 @@ const Game = () => {
 		}
 	}, delay)
 
+	// Timer for sprint mode
 	useInterval(() => {
 		if(mode === 'sprint' && status) {
 			setSprintTimer(prev => prev + 1)
@@ -64,6 +65,7 @@ const Game = () => {
 		}
 	}, 1000)	
 	
+	// Couuntdown to start game
 	useInterval(() => {
 		if(newGameCounter) {
 			setTick(1)
@@ -99,10 +101,6 @@ const Game = () => {
 	useEffect(() => {
 		setDelay(prev => prev ? ((1 / levels[level - 1]) / 60 * 1000) : prev)
 	}, [level])
-
-	useEffect(() => {
-		console.log("test", cellSize)
-	}, [cellSize])
 
 	// Stop game on gameover
 	useEffect(() => {
@@ -182,7 +180,7 @@ const Game = () => {
 		}
 	}
 
-	// Handle mobile (touch) game inputs
+	// Handle mobile (touch) start input
 	const handleTouchStart = e => {
 		touchLastX = e.targetTouches[0].pageX
 		touchLastY = e.targetTouches[0].pageY
@@ -190,6 +188,7 @@ const Game = () => {
 		touchStart = null
 	}
 
+	// Handle mobile (touch) ongoing input
 	const handleTouchMove = e => {
 		if(!status) {
 			return
@@ -234,6 +233,7 @@ const Game = () => {
 		}
 	}
 
+	// Handle mobile (touch) end input
 	const handleTouchEnd = e => {
 		if (touchStart && (new Date()).getTime() - touchStart < 200 && touchLastY - touchFirstY > 70) {
 			dropTetromino(board)

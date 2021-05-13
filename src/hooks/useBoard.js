@@ -5,6 +5,7 @@ const useBoard = () => {
 	const [board, setBoard] = useState(Array.from(Array(boardHeight), () => Array.from(Array(boardWidth), () => [0, 0, 0]))) 	// [occupied, locked, preview]
 	const [clearedRows, setClearedRows] = useState({ value: 0 })
 	
+	// Update board
 	const updateBoard = useCallback((tetromino, moveTetromino, setGameOver) => {
 		let gameOver = false
 		setBoard(prev => {
@@ -72,6 +73,7 @@ const useBoard = () => {
 		})
 	}, [])
 
+	// Create new empty board
 	const newBoard = () => {
 		const newBoard = Array.from(Array(boardHeight), () => Array.from(Array(boardWidth), () => [0, 0, 0]))
 		setBoard(newBoard)

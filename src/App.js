@@ -7,7 +7,6 @@ import SignUp from './pages/sign-up/SignUp';
 import SignIn from './pages/sign-in/SignIn';
 import ForgotPassword from './pages/forgot-password/ForgotPassword';
 import AuthContextProvider from './contexts/AuthContext'
-import AuthRoute from './components/AuthRoute';
 import Leaderboards from './pages/leaderboard/Leaderboards';
 
 function App() {
@@ -33,9 +32,9 @@ function App() {
 						<ForgotPassword />
 					</Route>
 
-					<AuthRoute path='/leaderboards'>
+					<Route path='/leaderboards'>
 						<Leaderboards />
-					</AuthRoute>
+					</Route>
 
 					<Route path="*" element={ <NotFound /> } />
 				</Routes>

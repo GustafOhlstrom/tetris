@@ -27,15 +27,12 @@ const Navbar = () => {
 				TETRIS
 			</Link>
 
-			{
-				user &&
-				<Link to="/leaderboards">
-					<div className="svg leaderboard">
-						<LeaderboardSvg />
-					</div>
-				</Link>
-			}
-
+			<Link to="/leaderboards">
+				<div className="svg leaderboard">
+					<LeaderboardSvg />
+				</div>
+			</Link>
+			
 			<div 
 				className="nav-item" 
 				onClick={onToggleDropdown}
