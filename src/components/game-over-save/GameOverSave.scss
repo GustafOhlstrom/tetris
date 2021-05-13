@@ -1,0 +1,71 @@
+.gameover-save {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100%;
+	padding: 1rem;
+
+	background: rgba(0, 0, 0, 0.22);
+	z-index: 9;
+
+	.gameover-save-content {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+		width: 100%;
+		max-width: 600px;
+		padding: 2rem;
+
+		background: var(--background-1);
+		box-shadow: var(--box-shadow-1);
+		border-radius: var(--border-radius-1);
+
+		overflow: none;
+
+		header {
+			display: block;
+			width: 100%;
+			margin-bottom: 1rem;
+
+			svg {
+				display: block;
+				height: 16px;
+				margin: 0 0 1rem auto;
+				cursor: pointer;
+
+				&:hover {
+					fill: var(--color-theme-1);
+				}
+			}
+
+			h1 {
+				text-align: center;
+			}
+		}
+
+		.or {
+			margin: 3rem 0 1rem 0;
+		}
+
+		button {
+			max-width: 400px;
+		}
+	}
+
+	@media screen and (min-width: 768px) {
+		.gameover-save-content {
+			header {
+				svg {
+					margin: 0 0 0 auto;
+				}
+			}
+		}
+    }
+}

@@ -27,9 +27,9 @@ function App() {
 
 			<div className="container">
 				<Routes>
-					<AuthRoute path='/'>
+					<Route path='/'>
 						<Home />
-					</AuthRoute>
+					</Route>
 
 					<Route path='/signup'>
 						<SignUp />

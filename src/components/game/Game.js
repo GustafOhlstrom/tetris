@@ -1,5 +1,5 @@
 import './Game.scss'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ReactComponent as PauseSvg } from '../../assets/icons/pause.svg'
 import { ReactComponent as PlaySvg } from '../../assets/icons/play.svg'
 import Board from '../board/Board'
@@ -16,6 +16,8 @@ import useBestScores from '../../hooks/useBestScores'
 
 import { cellSize, levels, countDown } from '../../constants'
 import GameModes from '../game-modes/GameModes'
+import GameOverSave from '../game-over-save/GameOverSave'
+import { AuthContext } from '../../contexts/AuthContext'
 
 let touchStart
 let touchFirstY
@@ -28,6 +30,7 @@ const Game = () => {
 	const [newGameCounter, setNewGameCounter] = useState(null)
 	const [gameOver, setGameOver] = useState(false)
 	const [displayGameOver, setDisplayGameOver] = useState(false)
+	const [displayGameOverSave, setDisplayGameOverSave] = useState(false)
 	const [status, setStatus] = useState(false)
 	const [tick, setTick] = useState(0)
 	const [delay, setDelay] = useState(null)
@@ -38,6 +41,7 @@ const Game = () => {
 	const { board, updateBoard, newBoard, clearedRows } = useBoard()
 	const { score, lines, level, resetStats } = useStats(clearedRows)
 	const { saveScore, setSaveScore, highScore, setHighScore, loading: saveScoreLoading } = useSaveScore(mode)
+	const { user} = useContext(AuthContext)
 
 	// Tracks ticks and move tetrominos if game is ongoing
 	useInterval(() => {
@@ -97,10 +101,14 @@ const Game = () => {
 	useEffect(() => {
 		if(gameOver) {
 			setStatus(false)
-			setDisplayGameOver(true)
-			setSaveScore(score)
+			if(user) {
+				setDisplayGameOver(true)
+				setSaveScore(score)
+			} else {
+				setDisplayGameOverSave(true)
+			}
 		}
-	}, [gameOver, score, setSaveScore])
+	}, [gameOver, score, setSaveScore, user])
 
 	// Start game or unpause game
 	const onStartGame = mode => {
@@ -306,6 +314,18 @@ const Game = () => {
 					loading={saveScoreLoading}
 					onStartGame={onStartGame}
 					setDisplayGameOver={setDisplayGameOver}
+				/>
+			}
+
+			{
+				displayGameOverSave &&
+				<GameOverSave 
+					mode={mode}
+					onStartGame={onStartGame}
+					setDisplayGameOver={setDisplayGameOver}
+					setDisplayGameOverSave={setDisplayGameOverSave}
+					score={score}
+					setSaveScore={setSaveScore}
 				/>
 			}
 		</>

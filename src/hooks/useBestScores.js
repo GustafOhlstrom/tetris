@@ -9,6 +9,10 @@ const useBestScores = () => {
 
 	// Save best scores
 	useEffect(() => {
+		if(!user) {
+			return
+		}
+		
 		const unsubscribe = db.collection('scores')
 			.doc(user.uid)
 			.onSnapshot(snapshot => {

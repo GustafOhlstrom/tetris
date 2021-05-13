@@ -25,7 +25,9 @@ const GameModes = ({ bestMarathon,  bestSprint, onStartGame, setPickMode }) => (
 					</div>
 
 					{
-						bestMarathon && <p className="pb">Best score: <span>{bestMarathon}</span></p>
+						bestMarathon 
+							? <p className="pb">Best score: <span>{bestMarathon}</span></p>
+							: bestSprint && <p className="pb"></p>
 					}
 					<button onClick={() => onStartGame('marathon')}>Play</button>
 				</section>
@@ -42,7 +44,9 @@ const GameModes = ({ bestMarathon,  bestSprint, onStartGame, setPickMode }) => (
 					</div>
 
 					{
-						bestSprint && <p className="pb">Best score: <span>{bestSprint}</span></p>
+						bestSprint 
+							? <p className="pb">Best score: <span>{bestSprint}</span></p>
+							: bestMarathon && <p className="pb"></p>
 					}
 					<button onClick={() => onStartGame('sprint')}>Play</button>
 				</section>

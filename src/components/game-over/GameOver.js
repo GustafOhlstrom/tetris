@@ -8,7 +8,7 @@ const GameOver = ({ mode, saveScore, highScore, level, lines, loading, onStartGa
 		<div className="gameover-content">
 			<header>
 				<CloseSvg onClick={() => setDisplayGameOver(false)}/>
-				<h1>{highScore === saveScore ? 'New High Score!' : 'Game over'}</h1>
+				<h1>{highScore === saveScore && saveScore > 0 ? 'New High Score!' : 'Game over'}</h1>
 			</header>
 
 			{
