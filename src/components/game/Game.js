@@ -119,6 +119,8 @@ const Game = () => {
 
 	// Start game or unpause game
 	const onStartGame = mode => {
+		document.querySelector(".game-panels").focus()
+
 		if(!status) {
 			setPickMode(false)
 			setMode(mode)
@@ -137,6 +139,7 @@ const Game = () => {
 				setStatus(false)
 				return null
 			} else {
+				document.querySelector(".game-panels").focus()
 				setStatus(true)
 				return (1 / levels[level - 1]) / 60 * 1000
 			}
